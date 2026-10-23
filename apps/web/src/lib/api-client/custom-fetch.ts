@@ -9,6 +9,16 @@ export const customFetch = async <T>(
   const { params, ...fetchOptions } = options;
 
   let requestUrl = url;
+
+  if (requestUrl.startsWith('/api/v1/')) {
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const currentMfe = pathSegments[0]; 
+
+    if (currentMfe) {
+      requestUrl = requestUrl.replace('/api/v1/', `/api/v1/${currentMfe}/`);
+    }
+  }
+
   if (params) {
     const searchParams = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {

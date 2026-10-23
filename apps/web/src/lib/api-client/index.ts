@@ -72,10 +72,6 @@ export type healthControllerReadyResponseError = (healthControllerReadyResponse5
 export type healthControllerReadyResponse = (healthControllerReadyResponseSuccess | healthControllerReadyResponseError)
 
 export const getHealthControllerReadyUrl = () => {
-
-
-
-
   return `/health/ready`
 }
 
@@ -120,10 +116,6 @@ export type tasksControllerCreateResponseError = (tasksControllerCreateResponse4
 export type tasksControllerCreateResponse = (tasksControllerCreateResponseSuccess | tasksControllerCreateResponseError)
 
 export const getTasksControllerCreateUrl = () => {
-
-
-
-
   return `/api/v1/tasks`
 }
 

@@ -33,7 +33,7 @@ export default defineConfig({
     strictPort: true,
     cors: true,
     proxy: {
-      '/api': {
+      '/api/v1/demo': {
         target: process.env.API_BASE_URL || 'http://localhost:3009',
         changeOrigin: true,
       },

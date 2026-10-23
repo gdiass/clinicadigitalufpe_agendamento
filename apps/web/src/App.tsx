@@ -9,6 +9,7 @@ import { ThemeProvider } from './context/theme-context';
 import { AuthLayout } from './components/layout/auth-layout';
 import { ProtectedRoute } from './components/layout/protected-route';
 import { TasksPage } from './pages/tasks-page';
+import { HomePage } from './pages/home-page';
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -50,12 +51,13 @@ export function App() {
               <Route
                 element={
                   <ProtectedRoute>
-                    <AuthLayout />
+                    <AuthLayout/>
                   </ProtectedRoute>
                 }
               >
-                <Route path="/" element={<TasksPage />} />
-                <Route path="/tasks" element={<TasksPage />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/demo" element={<HomePage />} />
+                <Route path="/demo/tasks" element={<TasksPage />} />
               </Route>
 
               <Route 
