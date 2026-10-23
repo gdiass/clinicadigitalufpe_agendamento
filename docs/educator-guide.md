@@ -40,7 +40,7 @@ Para iniciar os servidores de desenvolvimento:
 ```bash
 pnpm dev
 ```
-Acesse a aplicação em `http://localhost:5179`.
+Acesse a aplicação em `http://localhost:5174`.
 
 ---
 

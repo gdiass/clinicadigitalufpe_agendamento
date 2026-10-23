@@ -12,4 +12,4 @@ const child = spawn(command, args, {
 });
 
 child.unref();
-console.log('[mfe] processo Vite iniciado em http://localhost:5179');
+console.log('[mfe] processo Vite iniciado em http://localhost:5174');

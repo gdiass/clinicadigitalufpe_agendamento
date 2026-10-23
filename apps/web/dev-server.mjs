@@ -1,7 +1,7 @@
 import http from 'node:http';
 
-const port = Number(process.env.WEB_PORT ?? 5179);
-const apiPort = Number(process.env.API_PORT ?? 3009);
+const port = Number(process.env.WEB_PORT ?? 5174);
+const apiPort = Number(process.env.API_PORT ?? 3001);
 
 const html = `<!doctype html>
 <html lang="pt-BR">

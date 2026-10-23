@@ -33,8 +33,8 @@ O script fará algumas perguntas (nome do projeto, portas) e vai transformar ess
 > ⚠️ **Atenção no Codespaces:**
 > Se ao tentar fazer login o painel mostrar "Origem não permitida" ou "CORS error", é porque o backend foi feito para proteger contra acessos de URLs desconhecidas. Abra o seu arquivo `.env` e troque os `http://localhost` para as URLs públicas que o Codespaces gerou para você (mantendo as portas):
 > ```env
-> API_BASE_URL=https://NOME-DO-SEU-CODESPACE-3009.app.github.dev
-> WEB_BASE_URL=https://NOME-DO-SEU-CODESPACE-5179.app.github.dev
+> API_BASE_URL=https://NOME-DO-SEU-CODESPACE-3001.app.github.dev
+> WEB_BASE_URL=https://NOME-DO-SEU-CODESPACE-5174.app.github.dev
 > SHELL_BASE_URL=https://seu-shell.example.com
 > ```
 > Após alterar o `.env`, reinicie o servidor (`pnpm dev`) para ele ler as novas URLs!
@@ -59,8 +59,8 @@ pnpm run setup
 pnpm dev
 ```
 
-Acesse a aplicação em: **[http://localhost:5179](http://localhost:5179)**  
-Documentação da API Swagger em: **[http://localhost:3009/api/v1/docs](http://localhost:3009/api/v1/docs)**
+Acesse a aplicação em: **[http://localhost:5174](http://localhost:5174)**  
+Documentação da API Swagger em: **[http://localhost:3001/api/v1/docs](http://localhost:3001/api/v1/docs)**
 
 ---
 
@@ -109,7 +109,7 @@ O repositório inclui skills pedagógicas prontas em `.agent/skills/`:
 ```bash
 # Desenvolvimento & Setup
 pnpm run setup          # Executa o provisionamento inicial completo
-pnpm dev            # Inicia API (3009) e Web (5179) em paralelo
+pnpm dev            # Inicia API (3001) e Web (5174) em paralelo
 pnpm scaffold       # Scaffolding interativo para criar novos projetos derivados
 
 # Banco de Dados & Migrations

@@ -29,12 +29,12 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5179,
+    port: 5174,
     strictPort: true,
     cors: true,
     proxy: {
-      '/api/v1/demo': {
-        target: process.env.API_BASE_URL || 'http://localhost:3009',
+      '/api/v1/schedules': {
+        target: process.env.API_BASE_URL || 'http://localhost:3001',
         changeOrigin: true,
       },
     },

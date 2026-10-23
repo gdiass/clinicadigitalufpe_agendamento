@@ -15,9 +15,9 @@ PROJECT_NAME=""
 TARGET_DIR=""
 PROJECT_DESCRIPTION=""
 DB_NAME=""
-API_PORT="3009"
-WEB_PORT="5179"
-DB_PORT="5439"
+API_PORT="3001"
+WEB_PORT="5174"
+DB_PORT="5433"
 GIT_REMOTE_URL=""
 SKIP_INSTALL=0
 SKIP_GIT=0
@@ -41,9 +41,9 @@ Opções:
   --dir <caminho>             Diretório de destino
   --description <texto>       Descrição do projeto
   --db-name <snake_case>      Nome do banco de dados
-  --api-port <porta>          Porta da API (padrão: 3009)
-  --web-port <porta>          Porta do frontend (padrão: 5179)
-  --db-port <porta>           Porta publicada do PostgreSQL (padrão: 5439)
+  --api-port <porta>          Porta da API (padrão: 3001)
+  --web-port <porta>          Porta do frontend (padrão: 5174)
+  --db-port <porta>           Porta publicada do PostgreSQL (padrão: 5433)
   --git-remote <url>          Remote Git opcional para o projeto derivado
   --skip-install              Não executa pnpm install
   --skip-git                  Não executa git init
@@ -125,9 +125,9 @@ while ! validate_db_name "\$DB_NAME"; do
   DB_NAME="\$(require_value "" "Nome do banco de dados [\({DEFAULT_DB_NAME}]: " "\)DEFAULT_DB_NAME")"
 done
 
-API_PORT="\((require_value "\)API_PORT" "Porta da API: " "3009")"
-WEB_PORT="\((require_value "\)WEB_PORT" "Porta do frontend: " "5179")"
-DB_PORT="\((require_value "\)DB_PORT" "Porta do PostgreSQL: " "5439")"
+API_PORT="\((require_value "\)API_PORT" "Porta da API: " "3001")"
+WEB_PORT="\((require_value "\)WEB_PORT" "Porta do frontend: " "5174")"
+DB_PORT="\((require_value "\)DB_PORT" "Porta do PostgreSQL: " "5433")"
 
 if [[ "\$IN_PLACE" -eq 0 ]]; then
   info "Criando projeto em '\${TARGET_DIR}'..."
