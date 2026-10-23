@@ -31,7 +31,7 @@ flowchart LR
    ```
 5. **Validação do Passo 1:** Teste a criação da tabela no PostgreSQL:
    ```bash
-   PGPASSWORD=appstart_dev_password_change_me psql -h localhost -p 5432 -U appstart -d appstart -c "\d sua_tabela"
+   PGPASSWORD=appstart_dev_password_change_me psql -h localhost -p 5439 -U appstart -d appstart -c "\d sua_tabela"
    ```
 
 ---

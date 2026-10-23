@@ -32,7 +32,7 @@ Use esta skill quando o usuário ou aluno desejar aprender como criar uma nova f
   ```
 * **Checkpoint de Validação do Passo 1:**
   ```bash
-  PGPASSWORD=appstart_dev_password_change_me psql -h localhost -p 5432 -U appstart -d appstart -c "\d sua_tabela"
+  PGPASSWORD=appstart_dev_password_change_me psql -h localhost -p 5439 -U appstart -d appstart -c "\d sua_tabela"
   ```
   *Critério:* A tabela deve existir no PostgreSQL com todos os índices e foreign keys.
 

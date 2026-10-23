@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
     onError: (error) => {
       const status = (error as { status?: number })?.status;
       
-      if (window.location.port === '5174') {
+      if (window.location.port === '5179') {
         console.warn('A identidade deve ser fornecida pelo Shell em modo Standalone.');
         return;
       }
@@ -61,9 +61,9 @@ export function App() {
               <Route 
                 path="*" 
                 element={
-                  window.location.port === '5174' ? (
+                  window.location.port === '5179' ? (
                     <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
-                      <h2>MFE Tasks (Porta 5174)</h2>
+                      <h2>MFE Tasks (Porta 5179)</h2>
                       <p>Abra esta aplicação pelo Shell para fornecer a identidade autenticada.</p>
                       <button onClick={() => window.location.href = '/'}>Ir para Raiz</button>
                     </div>

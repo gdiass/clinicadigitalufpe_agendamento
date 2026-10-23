@@ -34,9 +34,9 @@ O script solicita:
   --dir ../meu-projeto \
   --description "Projeto da disciplina" \
   --db-name meu_projeto \
-  --api-port 3000 \
-  --web-port 5174 \
-  --db-port 5432 \
+  --api-port 3009 \
+  --web-port 5179 \
+  --db-port 5439 \
   --keycloak-port 8080 \
   --admin-email admin@meu-projeto.local \
   --admin-name "Administrador"

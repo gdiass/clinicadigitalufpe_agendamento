@@ -19,7 +19,7 @@ Toda alteração em `apps/api/prisma/schema.prisma` deve possuir uma migration v
 Para executar a mesma validação localmente, informe um banco temporário e exclusivo, com nome terminado em `_shadow`:
 
 ```bash
-SHADOW_DATABASE_URL="postgresql://usuario:senha@localhost:5432/appstart_shadow" pnpm db:check
+SHADOW_DATABASE_URL="postgresql://usuario:senha@localhost:5439/appstart_shadow" pnpm db:check
 ```
 
 O banco de shadow é descartável e jamais deve conter dados reais.

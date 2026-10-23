@@ -28,12 +28,12 @@ export default defineConfig({
         },
     },
     server: {
-        port: 5174,
+        port: 5179,
         strictPort: true,
         cors: true,
         proxy: {
             '/api': {
-                target: process.env.API_BASE_URL || 'http://localhost:3001',
+                target: process.env.API_BASE_URL || 'http://localhost:3009',
                 changeOrigin: true,
             },
         },
