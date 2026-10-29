@@ -27,6 +27,7 @@
     "api:check": "node scripts/check-api-divergence.mjs",
     "web:dev": "pnpm --dir apps/web dev",
     "test": "pnpm --dir apps/api test && pnpm --dir apps/web test",
+    "typecheck": "pnpm --dir apps/api typecheck && pnpm --dir apps/web typecheck",
     "docs:check": "node scripts/check-docs-integrity.mjs",
     "check:all": "pnpm test && pnpm --dir apps/web build && pnpm api:check && pnpm docs:check"
   },
