@@ -24,7 +24,7 @@ describe('Observability & Sanitization', () => {
     });
 
     it('preserves existing x-request-id header when provided', () => {
-      const req = { headers: { 'x-request-id': 'custom-trace-id-123' } } as Request;
+      const req = { headers: { 'x-request-id': 'custom-trace-id-123' } } as unknown as Request;
       const setHeader = vi.fn();
       const res = { setHeader } as unknown as Response;
       const next = vi.fn();
