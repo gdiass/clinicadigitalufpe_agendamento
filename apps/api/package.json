@@ -6,6 +6,7 @@
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "test:watch": "vitest",
     "test:e2e": "vitest run --config vitest.e2e.config.mts",
     "prisma:generate": "prisma generate --schema prisma/schema.prisma"
