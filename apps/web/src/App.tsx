@@ -10,6 +10,7 @@ import { AuthLayout } from './components/layout/auth-layout';
 import { ProtectedRoute } from './components/layout/protected-route';
 import { TasksPage } from './pages/tasks-page';
 import { HomePage } from './pages/home-page';
+import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -47,6 +48,7 @@ export function App() {
       <ThemeProvider>
         <AuthProvider>
           <BrowserRouter>
+            <MfeRouteSyncer /> 
             <Routes>
               <Route
                 element={
@@ -55,9 +57,11 @@ export function App() {
                   </ProtectedRoute>
                 }
               >
-                <Route path="/" element={<HomePage />} />
-                <Route path="/schedules" element={<HomePage />} />
-                <Route path="/schedules/tasks" element={<TasksPage />} />
+                <Route path="/schedules/home" element={<HomePage pageName="Homepage" />} />
+                <Route path="/schedules/new" element={<TasksPage />} />
+                <Route path="/schedules/confirmations" element={<HomePage pageName="Confirmations" />} />
+                <Route path="/schedules/patients" element={<HomePage pageName="Patients" />} />
+                <Route path="/schedules/emails" element={<HomePage pageName="Emails" />} />
               </Route>
 
               <Route 
@@ -70,7 +74,7 @@ export function App() {
                       <button onClick={() => window.location.href = '/'}>Ir para Raiz</button>
                     </div>
                   ) : (
-                    <Navigate to="/" replace />
+                    <Navigate to="/schedules" replace />
                   )
                 } 
               />

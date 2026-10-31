@@ -1,5 +1,5 @@
 {
-  "name": "@appstart/web",
+  "name": "@appstart/mfeweb",
   "private": true,
   "type": "module",
   "scripts": {
