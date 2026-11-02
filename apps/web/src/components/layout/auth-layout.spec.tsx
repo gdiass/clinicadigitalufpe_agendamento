@@ -34,7 +34,6 @@ describe('AuthLayout', () => {
       </QueryClientProvider>,
     );
     
-    // Check if the main container is rendered with the correct id
     const mainContainer = screen.getByRole('main');
     expect(mainContainer).toBeInTheDocument();
     expect(mainContainer).toHaveAttribute('id', 'main-container');
