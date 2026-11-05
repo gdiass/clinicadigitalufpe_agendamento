@@ -38,3 +38,125 @@ model Task {
   @@index([status])
   @@map("tasks")
 }
+
+// ─── Agenda: Enums ──────────────────────────────────────────────────────────
+
+enum StatusAgendamento {
+  AGENDADO
+  CONFIRMADO
+  CHEGOU
+  EM_ATENDIMENTO
+  REALIZADO
+  CANCELADO
+  FALTOU
+  REMARCADO
+
+  @@map("status_agendamento")
+}
+
+enum Modalidade {
+  PRESENCIAL
+  REMOTO
+
+  @@map("modalidade")
+}
+
+/// Valores ainda a validar com a clínica.
+enum TipoAtendimento {
+  CONSULTA
+  AVALIACAO
+  PROCEDIMENTO
+  RETORNO
+
+  @@map("tipo_atendimento")
+}
+
+// ─── Agenda: Models ─────────────────────────────────────────────────────────
+
+model Disponibilidade {
+  id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profissionalId  String     @map("profissional_id") @db.Uuid
+  clinicaId       String     @map("clinica_id") @db.Uuid
+  servicoId       String     @map("servico_id") @db.Uuid
+  data            DateTime   @map("data") @db.Date
+  inicio          DateTime   @map("inicio") @db.Time
+  fim             DateTime   @map("fim") @db.Time
+  modalidade      Modalidade
+  /// Regra pendente: duração pode ser fixa por serviço ou definida pelo profissional.
+  /// Decisão será tomada com a clínica.
+  duracaoSlotMin  Int        @map("duracao_slot_min")
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+
+  slots Slot[]
+
+  @@map("disponibilidades")
+}
+
+model Slot {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  disponibilidadeId String          @map("disponibilidade_id") @db.Uuid
+  inicio            DateTime        @map("inicio") @db.Timestamptz
+  fim               DateTime        @map("fim") @db.Timestamptz
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+
+  disponibilidade Disponibilidade @relation(fields: [disponibilidadeId], references: [id], onDelete: Cascade)
+  agendamentos    Agendamento[]
+
+  @@unique([disponibilidadeId, inicio], map: "slots_disponibilidade_id_inicio_key")
+  @@map("slots")
+}
+
+model Agendamento {
+  id                    String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slotId                String?            @map("slot_id") @db.Uuid
+  pacienteId            String             @map("paciente_id") @db.Uuid
+  profissionalId        String             @map("profissional_id") @db.Uuid
+  servicoId             String             @map("servico_id") @db.Uuid
+  clinicaId             String             @map("clinica_id") @db.Uuid
+  inicio                DateTime           @map("inicio") @db.Timestamptz
+  fim                   DateTime           @map("fim") @db.Timestamptz
+  tipoAtendimento       TipoAtendimento    @map("tipo_atendimento")
+  modalidade            Modalidade
+  status                StatusAgendamento  @default(AGENDADO)
+  motivo                String?            @map("motivo")
+  origemDemanda         String?            @map("origem_demanda")
+  chegadaEm             DateTime?          @map("chegada_em") @db.Timestamptz
+  inicioAtendimentoEm   DateTime?          @map("inicio_atendimento_em") @db.Timestamptz
+  fimAtendimentoEm      DateTime?          @map("fim_atendimento_em") @db.Timestamptz
+  canceladoEm           DateTime?          @map("cancelado_em") @db.Timestamptz
+  motivoCancelamento    String?            @map("motivo_cancelamento")
+  canceladoPorId        String?            @map("cancelado_por_id") @db.Uuid
+  agendamentoOrigemId   String?            @map("agendamento_origem_id") @db.Uuid
+  createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  slot                Slot?         @relation(fields: [slotId], references: [id], onDelete: SetNull)
+  agendamentoOrigem   Agendamento?  @relation("Remarcacao", fields: [agendamentoOrigemId], references: [id], onDelete: SetNull)
+  remarcacoes         Agendamento[] @relation("Remarcacao")
+  historicoStatus     HistoricoStatus[]
+
+  @@index([profissionalId, inicio], map: "agendamentos_profissional_id_inicio_idx")
+  @@index([pacienteId], map: "agendamentos_paciente_id_idx")
+  @@index([status], map: "agendamentos_status_idx")
+  @@index([clinicaId], map: "agendamentos_clinica_id_idx")
+  @@map("agendamentos")
+}
+
+model HistoricoStatus {
+  id              String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  agendamentoId   String             @map("agendamento_id") @db.Uuid
+  statusAnterior  StatusAgendamento? @map("status_anterior")
+  statusNovo      StatusAgendamento  @map("status_novo")
+  em              DateTime           @map("em") @db.Timestamptz
+  responsavelId   String             @map("responsavel_id") @db.Uuid
+  observacao      String?            @map("observacao")
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  agendamento Agendamento @relation(fields: [agendamentoId], references: [id], onDelete: Cascade)
+
+  @@index([agendamentoId], map: "historico_status_agendamento_id_idx")
+  @@map("historico_status")
+}
