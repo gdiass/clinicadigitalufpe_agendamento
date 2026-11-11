@@ -96,6 +96,70 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
+
+    Disponibilidade ||--o{ Slot : "gera"
+    Slot ||--o{ Agendamento : "vincula"
+    Agendamento ||--o{ HistoricoStatus : "possui"
+
+    Disponibilidade {
+        uuid id PK
+        uuid profissionalId
+        uuid clinicaId
+        uuid servicoId
+        date data
+        time inicio
+        time fim
+        enum modalidade "PRESENCIAL | REMOTO"
+        int duracaoSlotMin
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Slot {
+        uuid id PK
+        uuid disponibilidadeId FK
+        datetime inicio
+        datetime fim
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Agendamento {
+        uuid id PK
+        uuid slotId FK
+        uuid pacienteId
+        uuid profissionalId
+        uuid servicoId
+        uuid clinicaId
+        datetime inicio
+        datetime fim
+        enum tipoAtendimento "CONSULTA | AVALIACAO | PROCEDIMENTO | RETORNO"
+        enum modalidade "PRESENCIAL | REMOTO"
+        enum status "AGENDADO | CONFIRMADO | CHEGOU | EM_ATENDIMENTO | REALIZADO | CANCELADO | FALTOU | REMARCADO"
+        string motivo
+        string origemDemanda
+        datetime chegadaEm
+        datetime inicioAtendimentoEm
+        datetime fimAtendimentoEm
+        datetime canceladoEm
+        string motivoCancelamento
+        uuid canceladoPorId
+        uuid agendamentoOrigemId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    HistoricoStatus {
+        uuid id PK
+        uuid agendamentoId FK
+        enum statusAnterior
+        enum statusNovo
+        datetime em
+        uuid responsavelId
+        string observacao
+        datetime createdAt
+        datetime updatedAt
+    }
 ```
 
 ---
