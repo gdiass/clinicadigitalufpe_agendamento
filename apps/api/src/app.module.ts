@@ -8,9 +8,10 @@ import { HealthController } from './health/health.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ShellAuthModule } from './shell-auth/shell-auth.module';
+import { AgendamentosModule } from './agendamentos/agendamentos.module';
 
 @Module({
-  imports: [PrismaModule, ShellAuthModule, TasksModule],
+  imports: [PrismaModule, ShellAuthModule, TasksModule, AgendamentosModule],
   controllers: [HealthController],
   providers: [
     ErrorMonitoringService,
