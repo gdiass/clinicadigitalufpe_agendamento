@@ -38,21 +38,34 @@ validate-and-test:
 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    
+
+require-approval:
+  stage: test
+  before_script: []
+  cache: []
+  script:
+    - node scripts/check-mr-approval.mjs
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
 mirror-to-github:
   stage: mirror
-  image: alpine/git:latest
-  before_script: []
+  before_script:
+    - apk add --no-cache git
+  cache: []
+  variables:
+    GIT_STRATEGY: none
   script:
     - |
       if [ -z "$GITHUB_TOKEN" ] || [ -z "$GITHUB_REPOSITORY" ]; then
         echo "Configure as variáveis GITHUB_TOKEN e GITHUB_REPOSITORY no GitLab."
         exit 1
       fi
-    - |
-      git clone --mirror "$CI_REPOSITORY_URL" repository-mirror
-    - git -C repository-mirror remote add github "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-    - git -C repository-mirror push --mirror github
+    - git clone --bare "$CI_REPOSITORY_URL" repository-mirror
+    - >
+      git -C repository-mirror push --prune
+      "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+      "+refs/heads/*:refs/heads/*" "+refs/tags/*:refs/tags/*"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITHUB_REPOSITORY'
     - when: never
