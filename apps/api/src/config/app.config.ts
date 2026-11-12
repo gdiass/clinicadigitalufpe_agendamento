@@ -6,6 +6,12 @@ export interface AppConfig {
   apiBaseUrl: string;
   webBaseUrl: string;
   shellBaseUrl: string;
+  /**
+   * Implementação do PerfilProvider a usar.
+   * 'mock': usa MockPerfilProvider (lê X-Dev-Perfil); ignorado em NODE_ENV=production.
+   * 'shell': usa ShellPerfilProvider (lê role do ShellUser via DS-65). Padrão.
+   */
+  perfilProvider: 'mock' | 'shell';
 }
 
 function required(env: NodeJS.ProcessEnv, name: string): string {
@@ -43,5 +49,8 @@ export function createAppConfig(env: NodeJS.ProcessEnv = process.env): AppConfig
       if (new URL(value).protocol !== 'https:') throw new Error(`${name} deve usar HTTPS em produção.`);
     }
   }
-  return { nodeEnv: nodeEnvValue as AppConfig['nodeEnv'], apiPort, apiBaseUrl, webBaseUrl, shellBaseUrl };
+  const perfilProviderRaw = env.PERFIL_PROVIDER?.trim().toLowerCase();
+  const perfilProvider: AppConfig['perfilProvider'] = perfilProviderRaw === 'mock' ? 'mock' : 'shell';
+
+  return { nodeEnv: nodeEnvValue as AppConfig['nodeEnv'], apiPort, apiBaseUrl, webBaseUrl, shellBaseUrl, perfilProvider };
 }

@@ -16,6 +16,8 @@ export * from './managedUserDtoRole';
 export * from './paginatedTasksResponseDto';
 export * from './paginatedUsersResponseDto';
 export * from './paginationMetaDto';
+export * from './perfilDto';
+export * from './perfilDtoPerfil';
 export * from './problemDetailsDto';
 export * from './problemDetailsDtoErrors';
 export * from './safeUserProfileDto';

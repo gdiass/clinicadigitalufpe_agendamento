@@ -36,6 +36,7 @@ export default defineConfig({
       '/api/v1/schedules': {
         target: process.env.API_BASE_URL || 'http://localhost:3001',
         changeOrigin: true,
+        rewrite: (path) => path.replace('/api/v1/schedules', '/api/v1'),
       },
     },
   },

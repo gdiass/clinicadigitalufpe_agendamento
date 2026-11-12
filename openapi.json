@@ -435,6 +435,77 @@
           "tasks"
         ]
       }
+    },
+    "/api/v1/perfil/me": {
+      "get": {
+        "description": "Retorna o perfil de acesso do usuário na Agenda (RECEPCAO ou PROFISSIONAL) e, quando aplicável, o UUID do profissional no Cadastro (DS-63). Em modo desenvolvimento (PERFIL_PROVIDER=mock), o perfil pode ser simulado via cabeçalho X-Dev-Perfil.",
+        "operationId": "PerfilController_me",
+        "parameters": [
+          {
+            "name": "x-dev-perfil",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Dev-Perfil",
+            "in": "header",
+            "description": "Apenas em desenvolvimento (PERFIL_PROVIDER=mock): valor RECEPCAO ou PROFISSIONAL para simular perfil.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil do usuário na Agenda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PerfilDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Papel do Shell não mapeado a um perfil de Agenda. Configure RECEPCAO ou PROFISSIONAL no Shell (DS-65). [VALIDAR]",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Shell indisponível.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Obter perfil de negócio do usuário autenticado",
+        "tags": [
+          "perfil"
+        ]
+      }
     }
   },
   "info": {
@@ -737,6 +808,29 @@
             "description": "Data de entrega limite (ISO 8601)"
           }
         }
+      },
+      "PerfilDto": {
+        "type": "object",
+        "properties": {
+          "perfil": {
+            "type": "string",
+            "description": "Perfil de negócio do usuário na Agenda.",
+            "enum": [
+              "RECEPCAO",
+              "PROFISSIONAL"
+            ],
+            "example": "RECEPCAO"
+          },
+          "profissionalId": {
+            "type": "string",
+            "description": "UUID do profissional no microsserviço Cadastro (DS-63). Presente somente quando perfil === \"PROFISSIONAL\".",
+            "example": "00000000-0000-4000-a000-000000000010",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "perfil"
+        ]
       }
     }
   }

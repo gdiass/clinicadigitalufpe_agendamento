@@ -29,7 +29,10 @@ export class ShellAuthGuard implements CanActivate {
     if (!response.ok) throw new ServiceUnavailableException('O Shell não pôde validar a identidade.');
     const payload = (await response.json()) as ShellMeResponse;
     const user = payload.user;
-    if (!user || typeof user.id !== 'string' || typeof user.name !== 'string' || typeof user.email !== 'string' || !['USER', 'ADMIN'].includes(user.role ?? '')) {
+    // Papéis aceitos: USER/ADMIN (originais) + RECEPCAO/PROFISSIONAL (DS-65, adicionados de forma aditiva).
+    // [VALIDAR com o time do Shell] Remover esta ampliação se DS-65 não for implementada.
+    const papeis_aceitos = ['USER', 'ADMIN', 'RECEPCAO', 'PROFISSIONAL'];
+    if (!user || typeof user.id !== 'string' || typeof user.name !== 'string' || typeof user.email !== 'string' || !papeis_aceitos.includes(user.role ?? '')) {
       throw new ServiceUnavailableException('O Shell retornou uma identidade inválida.');
     }
     (request as Request & { shellUser?: ShellUser }).shellUser = {

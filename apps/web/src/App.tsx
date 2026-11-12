@@ -57,11 +57,48 @@ export function App() {
                   </ProtectedRoute>
                 }
               >
-                <Route path="/schedules/home" element={<HomePage pageName="Homepage" />} />
-                <Route path="/schedules/new" element={<TasksPage />} />
-                <Route path="/schedules/confirmations" element={<HomePage pageName="Confirmations" />} />
-                <Route path="/schedules/patients" element={<HomePage pageName="Patients" />} />
-                <Route path="/schedules/emails" element={<HomePage pageName="Emails" />} />
+                {/* [VALIDAR] Rota acessada por ambos os perfis: Recepção vê agenda multiprofissional; Profissional vê sua própria agenda */}
+                <Route
+                  path="/schedules/home"
+                  element={
+                    <ProtectedRoute requiredPerfil={['RECEPCAO', 'PROFISSIONAL']}>
+                      <HomePage pageName="Homepage" />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/schedules/new"
+                  element={
+                    <ProtectedRoute requiredPerfil="RECEPCAO">
+                      <TasksPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/schedules/confirmations"
+                  element={
+                    <ProtectedRoute requiredPerfil="RECEPCAO">
+                      <HomePage pageName="Confirmations" />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/schedules/patients"
+                  element={
+                    <ProtectedRoute requiredPerfil="RECEPCAO">
+                      <HomePage pageName="Patients" />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/schedules/emails"
+                  element={
+                    <ProtectedRoute requiredPerfil="RECEPCAO">
+                      <HomePage pageName="Emails" />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* [VALIDAR] A rota /schedules/meu-atendimento (atendimento clínico pelo profissional) ainda não existe no router e deve ser criada em task futura. */}
               </Route>
 
               <Route 
