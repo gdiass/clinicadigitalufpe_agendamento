@@ -8,6 +8,7 @@ default:
 
 stages:
   - test
+  - mirror
 
 variables:
   POSTGRES_DB: appstart_test
@@ -37,3 +38,21 @@ validate-and-test:
 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    
+mirror-to-github:
+  stage: mirror
+  image: alpine/git:latest
+  before_script: []
+  script:
+    - |
+      if [ -z "$GITHUB_TOKEN" ] || [ -z "$GITHUB_REPOSITORY" ]; then
+        echo "Configure as variáveis GITHUB_TOKEN e GITHUB_REPOSITORY no GitLab."
+        exit 1
+      fi
+    - |
+      git clone --mirror "$CI_REPOSITORY_URL" repository-mirror
+    - git -C repository-mirror remote add github "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+    - git -C repository-mirror push --mirror github
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITHUB_REPOSITORY'
+    - when: never

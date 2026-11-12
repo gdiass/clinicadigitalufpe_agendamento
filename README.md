@@ -64,6 +64,25 @@ Documentação da API Swagger em: **[http://localhost:3001/api/v1/docs](http://l
 
 ---
 
+## Espelhamento do GitLab para o GitHub
+
+O pipeline do GitLab espelha automaticamente o repositório para o GitHub após
+um merge na branch padrão. Para habilitar esse job:
+
+1. Crie no GitHub um repositório vazio, sem README, `.gitignore` ou licença.
+2. Crie um token do GitHub com permissão de escrita no conteúdo desse
+   repositório.
+3. Cadastre no GitLab, em **Settings > CI/CD > Variables**, as variáveis
+   protegidas:
+   - `GITHUB_TOKEN`: token do GitHub, marcado como **Masked** e **Protected**.
+   - `GITHUB_REPOSITORY`: ex: `nickusuario/clinicadigitalufpe_agendamento`, marcado como
+     **Protected**.
+
+O token não deve ser commitado no repositório. O job falha explicitamente se
+essas variáveis não estiverem configuradas ou se o repositório de destino ainda
+não existir.
+
+
 ---
 
 ## Arquitetura do Sistema
