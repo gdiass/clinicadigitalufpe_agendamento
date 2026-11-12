@@ -5,13 +5,14 @@ import { ErrorMonitoringService } from './common/observability/error-monitoring.
 import { HttpLoggingInterceptor } from './common/observability/logging.interceptor';
 import { RequestIdMiddleware } from './common/observability/request-id.middleware';
 import { HealthController } from './health/health.controller';
+import { PerfilModule } from './perfil/perfil.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ShellAuthModule } from './shell-auth/shell-auth.module';
 import { AgendamentosModule } from './agendamentos/agendamentos.module';
 
 @Module({
-  imports: [PrismaModule, ShellAuthModule, TasksModule, AgendamentosModule],
+  imports: [PrismaModule, ShellAuthModule, TasksModule, AgendamentosModule, PerfilModule],
   controllers: [HealthController],
   providers: [
     ErrorMonitoringService,

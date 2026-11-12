@@ -8,6 +8,7 @@
 import type {
   CreateTaskDto,
   PaginatedTasksResponseDto,
+  PerfilDto,
   ProblemDetailsDto,
   TaskDto,
   TasksControllerFindAllParams,
@@ -72,6 +73,10 @@ export type healthControllerReadyResponseError = (healthControllerReadyResponse5
 export type healthControllerReadyResponse = (healthControllerReadyResponseSuccess | healthControllerReadyResponseError)
 
 export const getHealthControllerReadyUrl = () => {
+
+
+
+
   return `/health/ready`
 }
 
@@ -116,6 +121,10 @@ export type tasksControllerCreateResponseError = (tasksControllerCreateResponse4
 export type tasksControllerCreateResponse = (tasksControllerCreateResponseSuccess | tasksControllerCreateResponseError)
 
 export const getTasksControllerCreateUrl = () => {
+
+
+
+
   return `/api/v1/tasks`
 }
 
@@ -376,6 +385,60 @@ export const tasksControllerRemove = async (id: string, options?: Parameters<typ
   {
     ...options,
     method: 'DELETE'
+
+
+  }
+);}
+
+
+
+export type perfilControllerMeResponse200 = {
+  data: PerfilDto
+  status: 200
+}
+
+export type perfilControllerMeResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type perfilControllerMeResponse403 = {
+  data: ProblemDetailsDto
+  status: 403
+}
+
+export type perfilControllerMeResponse503 = {
+  data: ProblemDetailsDto
+  status: 503
+}
+
+export type perfilControllerMeResponseSuccess = (perfilControllerMeResponse200) & {
+  headers: Headers;
+};
+export type perfilControllerMeResponseError = (perfilControllerMeResponse401 | perfilControllerMeResponse403 | perfilControllerMeResponse503) & {
+  headers: Headers;
+};
+
+export type perfilControllerMeResponse = (perfilControllerMeResponseSuccess | perfilControllerMeResponseError)
+
+export const getPerfilControllerMeUrl = () => {
+
+
+
+
+  return `/api/v1/perfil/me`
+}
+
+/**
+ * Retorna o perfil de acesso do usuário na Agenda (RECEPCAO ou PROFISSIONAL) e, quando aplicável, o UUID do profissional no Cadastro (DS-63). Em modo desenvolvimento (PERFIL_PROVIDER=mock), o perfil pode ser simulado via cabeçalho X-Dev-Perfil.
+ * @summary Obter perfil de negócio do usuário autenticado
+ */
+export const perfilControllerMe = async ( options?: Parameters<typeof customFetch>[1]): Promise<perfilControllerMeResponse> => {
+
+  return customFetch<perfilControllerMeResponse>(getPerfilControllerMeUrl(),
+  {
+    ...options,
+    method: 'GET'
 
 
   }

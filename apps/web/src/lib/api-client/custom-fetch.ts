@@ -32,11 +32,26 @@ export const customFetch = async <T>(
     }
   }
 
+  const devHeaders: Record<string, string> = {};
+  if (import.meta.env.DEV) {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const devPerfil = window.localStorage.getItem('dev_perfil');
+        if (devPerfil) {
+          devHeaders['X-Dev-Perfil'] = devPerfil;
+        }
+      }
+    } catch {
+      // Ignora falhas de acesso ao localStorage (ex.: iframe restrito)
+    }
+  }
+
   const response = await fetch(requestUrl, {
     ...fetchOptions,
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      ...devHeaders,
       ...fetchOptions.headers,
     },
   });

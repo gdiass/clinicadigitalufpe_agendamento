@@ -188,6 +188,7 @@ erDiagram
 | `GET` | `/api/v1/tasks/:id` | Sessão | `USER` | Detalhes da tarefa (owner ou admin) |
 | `PUT` | `/api/v1/tasks/:id` | Sessão + CSRF | `USER` | Atualiza tarefa respeitando regras de transição |
 | `DELETE`| `/api/v1/tasks/:id` | Sessão + CSRF | `USER` | Remoção lógica (*soft delete*) da tarefa |
+| `GET` | `/api/v1/perfil/me` | Sessão | - | Consulta perfil de negócio do usuário na Agenda (RECEPCAO ou PROFISSIONAL) (DS-64) |
 
 ---
 
