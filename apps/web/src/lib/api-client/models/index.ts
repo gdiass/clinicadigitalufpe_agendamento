@@ -7,12 +7,17 @@
  */
 
 export * from './authMeResponseDto';
+export * from './createDisponibilidadeDto';
 export * from './createTaskDto';
 export * from './createTaskDtoPriority';
 export * from './createUserDto';
 export * from './createUserDtoRole';
+export * from './disponibilidadeDto';
+export * from './disponibilidadesControllerListarParams';
 export * from './managedUserDto';
 export * from './managedUserDtoRole';
+export * from './modalidade';
+export * from './paginatedDisponibilidadesResponseDto';
 export * from './paginatedTasksResponseDto';
 export * from './paginatedUsersResponseDto';
 export * from './paginationMetaDto';
@@ -23,6 +28,7 @@ export * from './problemDetailsDtoErrors';
 export * from './safeUserProfileDto';
 export * from './safeUserProfileDtoRole';
 export * from './setUserStatusDto';
+export * from './slotDto';
 export * from './taskDto';
 export * from './taskDtoDescription';
 export * from './taskDtoDueDate';

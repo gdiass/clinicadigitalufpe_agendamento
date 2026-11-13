@@ -6,7 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  CreateDisponibilidadeDto,
   CreateTaskDto,
+  DisponibilidadeDto,
+  DisponibilidadesControllerListarParams,
+  PaginatedDisponibilidadesResponseDto,
   PaginatedTasksResponseDto,
   PerfilDto,
   ProblemDetailsDto,
@@ -385,6 +389,130 @@ export const tasksControllerRemove = async (id: string, options?: Parameters<typ
   {
     ...options,
     method: 'DELETE'
+
+
+  }
+);}
+
+
+
+export type disponibilidadesControllerCriarResponse201 = {
+  data: DisponibilidadeDto
+  status: 201
+}
+
+export type disponibilidadesControllerCriarResponse400 = {
+  data: ProblemDetailsDto
+  status: 400
+}
+
+export type disponibilidadesControllerCriarResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type disponibilidadesControllerCriarResponse409 = {
+  data: ProblemDetailsDto
+  status: 409
+}
+
+export type disponibilidadesControllerCriarResponseSuccess = (disponibilidadesControllerCriarResponse201) & {
+  headers: Headers;
+};
+export type disponibilidadesControllerCriarResponseError = (disponibilidadesControllerCriarResponse400 | disponibilidadesControllerCriarResponse401 | disponibilidadesControllerCriarResponse409) & {
+  headers: Headers;
+};
+
+export type disponibilidadesControllerCriarResponse = (disponibilidadesControllerCriarResponseSuccess | disponibilidadesControllerCriarResponseError)
+
+export const getDisponibilidadesControllerCriarUrl = () => {
+
+
+
+
+  return `/api/v1/disponibilidades`
+}
+
+/**
+ * Cria a janela de disponibilidade e gera os slots dela, de acordo com a duração informada.
+ * @summary Cadastrar disponibilidade do profissional (US-01)
+ */
+export const disponibilidadesControllerCriar = async (createDisponibilidadeDto: CreateDisponibilidadeDto, options?: Parameters<typeof customFetch>[1]): Promise<disponibilidadesControllerCriarResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<disponibilidadesControllerCriarResponse>(getDisponibilidadesControllerCriarUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createDisponibilidadeDto)
+  }
+);}
+
+
+
+export type disponibilidadesControllerListarResponse200 = {
+  data: PaginatedDisponibilidadesResponseDto
+  status: 200
+}
+
+export type disponibilidadesControllerListarResponse400 = {
+  data: ProblemDetailsDto
+  status: 400
+}
+
+export type disponibilidadesControllerListarResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type disponibilidadesControllerListarResponseSuccess = (disponibilidadesControllerListarResponse200) & {
+  headers: Headers;
+};
+export type disponibilidadesControllerListarResponseError = (disponibilidadesControllerListarResponse400 | disponibilidadesControllerListarResponse401) & {
+  headers: Headers;
+};
+
+export type disponibilidadesControllerListarResponse = (disponibilidadesControllerListarResponseSuccess | disponibilidadesControllerListarResponseError)
+
+export const getDisponibilidadesControllerListarUrl = (params?: DisponibilidadesControllerListarParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/disponibilidades?${stringifiedParams}` : `/api/v1/disponibilidades`
+}
+
+/**
+ * Lista as disponibilidades com os slots e quantos estão ocupados, com filtro por profissional e período.
+ * @summary Listar disponibilidades
+ */
+export const disponibilidadesControllerListar = async (params?: DisponibilidadesControllerListarParams, options?: Parameters<typeof customFetch>[1]): Promise<disponibilidadesControllerListarResponse> => {
+
+  return customFetch<disponibilidadesControllerListarResponse>(getDisponibilidadesControllerListarUrl(params),
+  {
+    ...options,
+    method: 'GET'
 
 
   }
