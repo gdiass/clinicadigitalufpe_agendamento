@@ -40,6 +40,22 @@ pnpm --dir apps/api exec vitest
 
 ---
 
+## 🔗 1.1. Testes E2E da API (NestJS + Vitest + Supertest + PostgreSQL)
+
+* **Localização:** `apps/api/test/*.e2e-spec.ts`.
+* **Como funcionam:** sobem o `AppModule` inteiro com a mesma configuração do `main.ts` (`configureApp`) e falam HTTP com a API usando o banco de `DATABASE_URL`. Só o `ShellAuthGuard` é trocado por um usuário fictício (`apps/api/test/app-e2e.ts`), porque o Shell não roda nos testes.
+* **Dados:** cada teste cria os próprios registros (profissionais com UUID aleatório) e apaga tudo o que criou no fim, então pode rodar no banco de desenvolvimento sem mexer no seed.
+* **O que testar:** os cenários Gherkin das histórias, regras garantidas pelo banco (ex.: constraint de sobreposição com requisições simultâneas) e o formato ProblemDetails das respostas de erro.
+* **Na CI:** rodam no job `validate-and-test`, depois do `db:migrate`.
+
+### Como executar:
+```bash
+pnpm db:migrate
+pnpm --dir apps/api test:e2e
+```
+
+---
+
 ## ⚛️ 2. Testes de Interface no Frontend (React + Vitest + Testing Library)
 
 * **Localização:** Arquivos `*.spec.tsx` em `apps/web/src/`.

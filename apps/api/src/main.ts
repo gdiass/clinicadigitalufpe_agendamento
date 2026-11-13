@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { configureApp } from './app.setup';
 import { APP_CONFIG, type AppConfig } from './config/app.config';
 import { setupSwagger } from './openapi';
 
@@ -9,18 +9,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const config = app.get<AppConfig>(APP_CONFIG);
 
-  app.setGlobalPrefix('api/v1', {
-    exclude: ['health', 'health/(.*)'],
-  });
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
+  configureApp(app);
 
   app.enableCors({
     origin: new URL(config.webBaseUrl).origin,

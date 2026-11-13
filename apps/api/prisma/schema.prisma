@@ -73,6 +73,9 @@ enum TipoAtendimento {
 
 // ─── Agenda: Models ─────────────────────────────────────────────────────────
 
+/// Restrições que o Prisma não modela e que estão só na migration
+/// 20261111_disponibilidade_sem_sobreposicao: CHECK fim > inicio e EXCLUDE
+/// que impede duas disponibilidades sobrepostas do mesmo profissional.
 model Disponibilidade {
   id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   profissionalId  String     @map("profissional_id") @db.Uuid

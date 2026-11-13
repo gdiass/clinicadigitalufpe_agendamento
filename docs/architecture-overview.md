@@ -162,6 +162,13 @@ erDiagram
     }
 ```
 
+**Regras garantidas pelo banco** (migration `20261111_disponibilidade_sem_sobreposicao`, fora do `schema.prisma` porque o Prisma não modela `CHECK` nem `EXCLUDE`):
+
+- `disponibilidades_fim_apos_inicio`: `fim > inicio`.
+- `disponibilidades_sem_sobreposicao`: um profissional não tem duas disponibilidades com intervalos `[data+inicio, data+fim)` que se cruzam (`EXCLUDE USING gist`, extensão `btree_gist`). Janelas encostadas são permitidas.
+
+Um slot está **ocupado** quando tem agendamento fora de `CANCELADO` e `REMARCADO` (RN01/RN04, constante `STATUS_QUE_LIBERAM_SLOT` em `apps/api/src/agendamentos/ocupacao-slot.ts`). Os horários de disponibilidade e slot são de America/Recife.
+
 ---
 
 ## 📋 4. Catálogo Canônico de Endpoints da API
@@ -188,6 +195,8 @@ erDiagram
 | `GET` | `/api/v1/tasks/:id` | Sessão | `USER` | Detalhes da tarefa (owner ou admin) |
 | `PUT` | `/api/v1/tasks/:id` | Sessão + CSRF | `USER` | Atualiza tarefa respeitando regras de transição |
 | `DELETE`| `/api/v1/tasks/:id` | Sessão + CSRF | `USER` | Remoção lógica (*soft delete*) da tarefa |
+| `POST` | `/api/v1/disponibilidades` | Shell (`ShellAuthGuard`) | `USER` | Cadastra a disponibilidade do profissional e gera os slots (US-01) |
+| `GET` | `/api/v1/disponibilidades` | Shell (`ShellAuthGuard`) | `USER` | Lista disponibilidades com slots livres/ocupados, por profissional e período |
 | `GET` | `/api/v1/perfil/me` | Sessão | - | Consulta perfil de negócio do usuário na Agenda (RECEPCAO ou PROFISSIONAL) (DS-64) |
 
 ---

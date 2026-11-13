@@ -436,6 +436,163 @@
         ]
       }
     },
+    "/api/v1/disponibilidades": {
+      "post": {
+        "description": "Cria a janela de disponibilidade e gera os slots dela, de acordo com a duração informada.",
+        "operationId": "DisponibilidadesController_criar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDisponibilidadeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Disponibilidade criada com os slots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisponibilidadeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos, fim antes do início ou janela que não se divide na duração",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sobrepõe outra disponibilidade do mesmo profissional",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cadastrar disponibilidade do profissional (US-01)",
+        "tags": [
+          "disponibilidades"
+        ]
+      },
+      "get": {
+        "description": "Lista as disponibilidades com os slots e quantos estão ocupados, com filtro por profissional e período.",
+        "operationId": "DisponibilidadesController_listar",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Itens por página",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "profissionalId",
+            "required": false,
+            "in": "query",
+            "description": "Filtra pelo profissional",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataInicio",
+            "required": false,
+            "in": "query",
+            "description": "Primeiro dia do período, inclusive (AAAA-MM-DD)",
+            "schema": {
+              "example": "2026-10-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataFim",
+            "required": false,
+            "in": "query",
+            "description": "Último dia do período, inclusive (AAAA-MM-DD)",
+            "schema": {
+              "example": "2026-10-31",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de disponibilidades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDisponibilidadesResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Filtros inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar disponibilidades",
+        "tags": [
+          "disponibilidades"
+        ]
+      }
+    },
     "/api/v1/perfil/me": {
       "get": {
         "description": "Retorna o perfil de acesso do usuário na Agenda (RECEPCAO ou PROFISSIONAL) e, quando aplicável, o UUID do profissional no Cadastro (DS-63). Em modo desenvolvimento (PERFIL_PROVIDER=mock), o perfil pode ser simulado via cabeçalho X-Dev-Perfil.",
@@ -808,6 +965,217 @@
             "description": "Data de entrega limite (ISO 8601)"
           }
         }
+      },
+      "Modalidade": {
+        "type": "string",
+        "enum": [
+          "PRESENCIAL",
+          "REMOTO"
+        ],
+        "description": "Modalidade do atendimento"
+      },
+      "CreateDisponibilidadeDto": {
+        "type": "object",
+        "properties": {
+          "profissionalId": {
+            "type": "string",
+            "description": "Profissional dono da disponibilidade (id do Cadastro)",
+            "example": "00000000-0000-4000-a000-000000000010"
+          },
+          "clinicaId": {
+            "type": "string",
+            "description": "Clínica onde o atendimento acontece (id do Cadastro)",
+            "example": "00000000-0000-4000-a000-000000000001"
+          },
+          "servicoId": {
+            "type": "string",
+            "description": "Serviço oferecido na janela (id do Cadastro)",
+            "example": "00000000-0000-4000-a000-000000000002"
+          },
+          "data": {
+            "type": "string",
+            "description": "Dia da disponibilidade (AAAA-MM-DD)",
+            "example": "2026-10-06"
+          },
+          "inicio": {
+            "type": "string",
+            "description": "Hora de início, no horário de Recife (HH:mm)",
+            "example": "08:00"
+          },
+          "fim": {
+            "type": "string",
+            "description": "Hora de fim, no horário de Recife (HH:mm)",
+            "example": "12:00"
+          },
+          "modalidade": {
+            "description": "Modalidade do atendimento",
+            "example": "PRESENCIAL",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Modalidade"
+              }
+            ]
+          },
+          "duracaoSlotMin": {
+            "type": "number",
+            "description": "Duração de cada slot, em minutos",
+            "example": 30,
+            "minimum": 1
+          }
+        },
+        "required": [
+          "profissionalId",
+          "clinicaId",
+          "servicoId",
+          "data",
+          "inicio",
+          "fim",
+          "modalidade",
+          "duracaoSlotMin"
+        ]
+      },
+      "SlotDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do slot"
+          },
+          "inicio": {
+            "type": "string",
+            "description": "Início do slot (ISO 8601)",
+            "example": "2026-10-06T11:00:00.000Z"
+          },
+          "fim": {
+            "type": "string",
+            "description": "Fim do slot (ISO 8601)",
+            "example": "2026-10-06T11:30:00.000Z"
+          },
+          "ocupado": {
+            "type": "boolean",
+            "description": "Se o slot já tem agendamento ativo (RN01)"
+          }
+        },
+        "required": [
+          "id",
+          "inicio",
+          "fim",
+          "ocupado"
+        ]
+      },
+      "DisponibilidadeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador da disponibilidade"
+          },
+          "profissionalId": {
+            "type": "string",
+            "description": "Profissional dono da disponibilidade"
+          },
+          "clinicaId": {
+            "type": "string",
+            "description": "Clínica do atendimento"
+          },
+          "servicoId": {
+            "type": "string",
+            "description": "Serviço oferecido"
+          },
+          "data": {
+            "type": "string",
+            "description": "Dia (AAAA-MM-DD)",
+            "example": "2026-10-06"
+          },
+          "inicio": {
+            "type": "string",
+            "description": "Hora de início (HH:mm)",
+            "example": "08:00"
+          },
+          "fim": {
+            "type": "string",
+            "description": "Hora de fim (HH:mm)",
+            "example": "12:00"
+          },
+          "modalidade": {
+            "description": "Modalidade do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Modalidade"
+              }
+            ]
+          },
+          "duracaoSlotMin": {
+            "type": "number",
+            "description": "Duração de cada slot, em minutos",
+            "example": 30
+          },
+          "totalSlots": {
+            "type": "number",
+            "description": "Quantidade de slots da janela",
+            "example": 8
+          },
+          "slotsOcupados": {
+            "type": "number",
+            "description": "Quantidade de slots ocupados",
+            "example": 2
+          },
+          "slots": {
+            "description": "Slots da janela em ordem de horário",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SlotDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Data de criação"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Data de última atualização"
+          }
+        },
+        "required": [
+          "id",
+          "profissionalId",
+          "clinicaId",
+          "servicoId",
+          "data",
+          "inicio",
+          "fim",
+          "modalidade",
+          "duracaoSlotMin",
+          "totalSlots",
+          "slotsOcupados",
+          "slots",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedDisponibilidadesResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Disponibilidades da página",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DisponibilidadeDto"
+            }
+          },
+          "meta": {
+            "description": "Metadados de paginação",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginationMetaDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
       },
       "PerfilDto": {
         "type": "object",

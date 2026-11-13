@@ -3,6 +3,7 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { Test } from '@nestjs/testing';
 import { AppModule } from './app.module';
+import { configureApp } from './app.setup';
 import { buildOpenApiDocument } from './openapi';
 import { PrismaService } from './prisma/prisma.service';
 
@@ -16,9 +17,7 @@ async function generate(): Promise<void> {
       .compile();
 
     const app = moduleRef.createNestApplication();
-    app.setGlobalPrefix('api/v1', {
-      exclude: ['health', 'health/(.*)'],
-    });
+    configureApp(app);
 
     const document = buildOpenApiDocument(app);
     await app.close();

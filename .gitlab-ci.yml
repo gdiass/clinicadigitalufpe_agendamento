@@ -34,6 +34,7 @@ validate-and-test:
     - pnpm run typecheck
     - pnpm db:migrate
     - pnpm run test
+    - pnpm --dir apps/api test:e2e
 
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
