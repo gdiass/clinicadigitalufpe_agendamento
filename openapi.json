@@ -663,6 +663,144 @@
           "perfil"
         ]
       }
+    },
+    "/api/v1/cadastro/profissionais": {
+      "get": {
+        "description": "Lista os profissionais do Cadastro, usada nos filtros das telas da Agenda.",
+        "operationId": "CadastroController_listarProfissionais",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de profissionais",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProfissionalDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Integração com o Cadastro ainda não implementada (CADASTRO_PROVIDER=http)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar profissionais",
+        "tags": [
+          "cadastro"
+        ]
+      }
+    },
+    "/api/v1/cadastro/servicos": {
+      "get": {
+        "description": "Lista os serviços do Cadastro, usada nos filtros das telas da Agenda.",
+        "operationId": "CadastroController_listarServicos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de serviços",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServicoDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Integração com o Cadastro ainda não implementada (CADASTRO_PROVIDER=http)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar serviços",
+        "tags": [
+          "cadastro"
+        ]
+      }
+    },
+    "/api/v1/cadastro/clinicas": {
+      "get": {
+        "description": "Lista as clínicas do Cadastro, usada nos filtros das telas da Agenda.",
+        "operationId": "CadastroController_listarClinicas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de clínicas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClinicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Integração com o Cadastro ainda não implementada (CADASTRO_PROVIDER=http)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar clínicas",
+        "tags": [
+          "cadastro"
+        ]
+      }
     }
   },
   "info": {
@@ -1198,6 +1336,63 @@
         },
         "required": [
           "perfil"
+        ]
+      },
+      "ProfissionalDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do profissional (id do Cadastro)",
+            "example": "00000000-0000-4000-a000-000000000010"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do profissional",
+            "example": "Dra. Ana Lima"
+          }
+        },
+        "required": [
+          "id",
+          "nome"
+        ]
+      },
+      "ServicoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do serviço (id do Cadastro)",
+            "example": "00000000-0000-4000-a000-000000000002"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do serviço",
+            "example": "Fisioterapia"
+          }
+        },
+        "required": [
+          "id",
+          "nome"
+        ]
+      },
+      "ClinicaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador da clínica (id do Cadastro)",
+            "example": "00000000-0000-4000-a000-000000000001"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome da clínica",
+            "example": "Clínica Digital UFPE"
+          }
+        },
+        "required": [
+          "id",
+          "nome"
         ]
       }
     }

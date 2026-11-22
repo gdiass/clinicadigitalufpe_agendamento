@@ -7,6 +7,7 @@
  */
 
 export * from './authMeResponseDto';
+export * from './clinicaDto';
 export * from './createDisponibilidadeDto';
 export * from './createTaskDto';
 export * from './createTaskDtoPriority';
@@ -25,8 +26,10 @@ export * from './perfilDto';
 export * from './perfilDtoPerfil';
 export * from './problemDetailsDto';
 export * from './problemDetailsDtoErrors';
+export * from './profissionalDto';
 export * from './safeUserProfileDto';
 export * from './safeUserProfileDtoRole';
+export * from './servicoDto';
 export * from './setUserStatusDto';
 export * from './slotDto';
 export * from './taskDto';
