@@ -11,15 +11,17 @@ import { TasksModule } from './tasks/tasks.module';
 import { ShellAuthModule } from './shell-auth/shell-auth.module';
 import { AgendamentosModule } from './agendamentos/agendamentos.module';
 import { DisponibilidadesModule } from './disponibilidades/disponibilidades.module';
+import { CadastroModule } from './cadastro/cadastro.module';
 
 @Module({
-  imports: [
+    imports: [
     PrismaModule,
     ShellAuthModule,
     TasksModule,
     AgendamentosModule,
     DisponibilidadesModule,
     PerfilModule,
+    CadastroModule,
   ],
   controllers: [HealthController],
   providers: [
