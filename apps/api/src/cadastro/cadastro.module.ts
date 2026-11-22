@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { CadastroController } from './cadastro.controller';
 import { CadastroHttpProvider } from './cadastro.http';
 import { CadastroMockProvider } from './cadastro.mock';
 import { CADASTRO_PROVIDER_TOKEN } from './cadastro.provider';
 
 @Module({
+  controllers: [CadastroController],
   providers: [
     {
       provide: CADASTRO_PROVIDER_TOKEN,
