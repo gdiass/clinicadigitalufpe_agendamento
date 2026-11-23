@@ -38,6 +38,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace('/api/v1/schedules', '/api/v1'),
       },
+      // Catch-all: rotas da API do módulo (ex.: /api/v1/perfil/me) que chegam
+      // reescritas pelo shell e não casam com o proxy /api/v1/schedules.
+      '/api/v1': {
+        target: process.env.API_BASE_URL || 'http://localhost:3001',
+        changeOrigin: true,
+      },
     },
   },
 });
