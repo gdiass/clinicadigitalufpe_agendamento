@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './agendamentoDto';
 export * from './authMeResponseDto';
 export * from './createDisponibilidadeDto';
 export * from './createTaskDto';
@@ -14,6 +15,7 @@ export * from './createUserDto';
 export * from './createUserDtoRole';
 export * from './disponibilidadeDto';
 export * from './disponibilidadesControllerListarParams';
+export * from './historicoStatusDto';
 export * from './managedUserDto';
 export * from './managedUserDtoRole';
 export * from './modalidade';
@@ -25,10 +27,13 @@ export * from './perfilDto';
 export * from './perfilDtoPerfil';
 export * from './problemDetailsDto';
 export * from './problemDetailsDtoErrors';
+export * from './referenciaCadastroDto';
 export * from './safeUserProfileDto';
 export * from './safeUserProfileDtoRole';
 export * from './setUserStatusDto';
+export * from './slotDoAgendamentoDto';
 export * from './slotDto';
+export * from './statusAgendamento';
 export * from './taskDto';
 export * from './taskDtoDescription';
 export * from './taskDtoDueDate';
@@ -40,6 +45,7 @@ export * from './tasksControllerFindAllPriority';
 export * from './tasksControllerFindAllSortBy';
 export * from './tasksControllerFindAllSortOrder';
 export * from './tasksControllerFindAllStatus';
+export * from './tipoAtendimento';
 export * from './updateSelfUserDto';
 export * from './updateTaskDto';
 export * from './updateTaskDtoPriority';

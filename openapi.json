@@ -436,6 +436,68 @@
         ]
       }
     },
+    "/api/v1/agendamentos/{id}": {
+      "get": {
+        "description": "Devolve o estado, os horários, o slot, os participantes e o histórico de status do agendamento.",
+        "operationId": "AgendamentosController_obter",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agendamento encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgendamentoDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id inválido (não é UUID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agendamento não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Detalhe do agendamento",
+        "tags": [
+          "agendamentos"
+        ]
+      }
+    },
     "/api/v1/disponibilidades": {
       "post": {
         "description": "Cria a janela de disponibilidade e gera os slots dela, de acordo com a duração informada.",
@@ -966,6 +1028,20 @@
           }
         }
       },
+      "StatusAgendamento": {
+        "type": "string",
+        "enum": [
+          "AGENDADO",
+          "CONFIRMADO",
+          "CHEGOU",
+          "EM_ATENDIMENTO",
+          "REALIZADO",
+          "CANCELADO",
+          "FALTOU",
+          "REMARCADO"
+        ],
+        "description": "Estado atual (RN08)"
+      },
       "Modalidade": {
         "type": "string",
         "enum": [
@@ -973,6 +1049,270 @@
           "REMOTO"
         ],
         "description": "Modalidade do atendimento"
+      },
+      "TipoAtendimento": {
+        "type": "string",
+        "enum": [
+          "CONSULTA",
+          "AVALIACAO",
+          "PROCEDIMENTO",
+          "RETORNO"
+        ],
+        "description": "Tipo do atendimento"
+      },
+      "ReferenciaCadastroDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador no Cadastro",
+            "example": "00000000-0000-4000-a000-000000000020"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "SlotDoAgendamentoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do slot"
+          },
+          "inicio": {
+            "type": "string",
+            "description": "Início do slot (ISO 8601)",
+            "example": "2026-10-06T11:00:00.000Z"
+          },
+          "fim": {
+            "type": "string",
+            "description": "Fim do slot (ISO 8601)",
+            "example": "2026-10-06T11:30:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "inicio",
+          "fim"
+        ]
+      },
+      "HistoricoStatusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do registro"
+          },
+          "statusAnterior": {
+            "description": "Estado anterior (null na criação do agendamento)",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatusAgendamento"
+              }
+            ]
+          },
+          "statusNovo": {
+            "description": "Estado novo",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatusAgendamento"
+              }
+            ]
+          },
+          "em": {
+            "type": "string",
+            "description": "Quando a troca aconteceu (ISO 8601)"
+          },
+          "responsavelId": {
+            "type": "string",
+            "description": "Usuário do Shell que fez a troca"
+          },
+          "observacao": {
+            "type": "string",
+            "description": "Observação registrada junto com a troca",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "statusAnterior",
+          "statusNovo",
+          "em",
+          "responsavelId",
+          "observacao"
+        ]
+      },
+      "AgendamentoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do agendamento"
+          },
+          "status": {
+            "description": "Estado atual (RN08)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatusAgendamento"
+              }
+            ]
+          },
+          "inicio": {
+            "type": "string",
+            "description": "Início marcado (ISO 8601)",
+            "example": "2026-10-06T11:00:00.000Z"
+          },
+          "fim": {
+            "type": "string",
+            "description": "Fim marcado (ISO 8601)",
+            "example": "2026-10-06T11:30:00.000Z"
+          },
+          "modalidade": {
+            "description": "Modalidade do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Modalidade"
+              }
+            ]
+          },
+          "tipoAtendimento": {
+            "description": "Tipo do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TipoAtendimento"
+              }
+            ]
+          },
+          "paciente": {
+            "description": "Paciente atendido",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "profissional": {
+            "description": "Profissional responsável",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "clinica": {
+            "description": "Clínica do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "servico": {
+            "description": "Serviço do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "slot": {
+            "description": "Slot da agenda reservado na marcação; null quando não há slot (ex.: encaixe). Em CANCELADO e REMARCADO o slot continua aqui, mas já está livre na agenda",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SlotDoAgendamentoDto"
+              }
+            ]
+          },
+          "motivo": {
+            "type": "string",
+            "description": "Motivo do atendimento",
+            "nullable": true
+          },
+          "origemDemanda": {
+            "type": "string",
+            "description": "Origem da demanda",
+            "nullable": true
+          },
+          "chegadaEm": {
+            "type": "string",
+            "description": "Chegada do paciente (ISO 8601)",
+            "nullable": true
+          },
+          "inicioAtendimentoEm": {
+            "type": "string",
+            "description": "Início do atendimento (ISO 8601)",
+            "nullable": true
+          },
+          "fimAtendimentoEm": {
+            "type": "string",
+            "description": "Fim do atendimento (ISO 8601)",
+            "nullable": true
+          },
+          "canceladoEm": {
+            "type": "string",
+            "description": "Data do cancelamento (ISO 8601)",
+            "nullable": true
+          },
+          "motivoCancelamento": {
+            "type": "string",
+            "description": "Motivo do cancelamento",
+            "nullable": true
+          },
+          "canceladoPorId": {
+            "type": "string",
+            "description": "Usuário do Shell que cancelou",
+            "nullable": true
+          },
+          "agendamentoOrigemId": {
+            "type": "string",
+            "description": "Agendamento original, quando este veio de uma remarcação",
+            "nullable": true
+          },
+          "historico": {
+            "description": "Trocas de estado em ordem cronológica",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoricoStatusDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Data de criação"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Data de última atualização"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "inicio",
+          "fim",
+          "modalidade",
+          "tipoAtendimento",
+          "paciente",
+          "profissional",
+          "clinica",
+          "servico",
+          "slot",
+          "motivo",
+          "origemDemanda",
+          "chegadaEm",
+          "inicioAtendimentoEm",
+          "fimAtendimentoEm",
+          "canceladoEm",
+          "motivoCancelamento",
+          "canceladoPorId",
+          "agendamentoOrigemId",
+          "historico",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "CreateDisponibilidadeDto": {
         "type": "object",

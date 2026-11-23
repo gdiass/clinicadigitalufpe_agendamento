@@ -4,8 +4,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Agendamento, StatusAgendamento } from '@prisma/client';
+import { Prisma, StatusAgendamento } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { type AgendamentoDetalhado, INCLUDE_DETALHE } from './agendamento-detalhe';
 
 // A transição AGENDADO → CHEGOU está marcada [VALIDAR] na seção 1.6 do dicionário,
 // e há pendência se atendimento REMOTO pode ir direto a EM_ATENDIMENTO.
@@ -31,6 +32,35 @@ export const TRANSICOES_PERMITIDAS: Record<StatusAgendamento, StatusAgendamento[
   [StatusAgendamento.FALTOU]: [],
 };
 
+export const CAMPOS_DA_TRANSICAO = [
+  'chegadaEm',
+  'inicioAtendimentoEm',
+  'fimAtendimentoEm',
+  'canceladoEm',
+  'motivoCancelamento',
+  'canceladoPorId',
+] as const;
+
+/**
+ * Campos que uma ação grava no agendamento junto com a troca de estado, na mesma transação.
+ * Uma ação que precise de outro campo o acrescenta em CAMPOS_DA_TRANSICAO.
+ */
+export type CamposDaTransicao = Pick<Prisma.AgendamentoUncheckedUpdateManyInput, (typeof CAMPOS_DA_TRANSICAO)[number]>;
+
+/**
+ * Copia só os campos permitidos. O tipo já restringe em compilação; aqui a restrição vale também
+ * para objetos montados com spread ou cast, que poderiam levar slotId, pacienteId etc. ao update.
+ */
+export function somenteCamposPermitidos(campos: CamposDaTransicao): CamposDaTransicao {
+  const permitidos: Record<string, unknown> = {};
+  for (const campo of CAMPOS_DA_TRANSICAO) {
+    if (Object.prototype.hasOwnProperty.call(campos, campo)) {
+      permitidos[campo] = campos[campo];
+    }
+  }
+  return permitidos as CamposDaTransicao;
+}
+
 @Injectable()
 export class AgendamentoEstadoService {
   constructor(private readonly prisma: PrismaService) {}
@@ -40,7 +70,8 @@ export class AgendamentoEstadoService {
     novoStatus: StatusAgendamento,
     responsavelId: string,
     observacao?: string,
-  ): Promise<Agendamento> {
+    campos: CamposDaTransicao = {},
+  ): Promise<AgendamentoDetalhado> {
     if (!responsavelId || !responsavelId.trim()) {
       throw new BadRequestException('Responsável é obrigatório.');
     }
@@ -67,6 +98,7 @@ export class AgendamentoEstadoService {
           status: agendamento.status,
         },
         data: {
+          ...somenteCamposPermitidos(campos),
           status: novoStatus,
         },
       });
@@ -88,6 +120,7 @@ export class AgendamentoEstadoService {
 
       const agendamentoAtualizado = await tx.agendamento.findUniqueOrThrow({
         where: { id: agendamentoId },
+        include: INCLUDE_DETALHE,
       });
 
       return agendamentoAtualizado;

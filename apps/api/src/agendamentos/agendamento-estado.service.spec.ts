@@ -6,8 +6,12 @@ import {
 import { StatusAgendamento } from '@prisma/client';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PrismaService } from '../prisma/prisma.service';
+import { INCLUDE_DETALHE } from './agendamento-detalhe';
 import {
   AgendamentoEstadoService,
+  CAMPOS_DA_TRANSICAO,
+  type CamposDaTransicao,
+  somenteCamposPermitidos,
   TRANSICOES_PERMITIDAS,
 } from './agendamento-estado.service';
 
@@ -131,6 +135,7 @@ describe('AgendamentoEstadoService', () => {
           });
           expect(prisma.agendamento.findUniqueOrThrow).toHaveBeenCalledWith({
             where: { id: agendamentoId },
+            include: INCLUDE_DETALHE,
           });
         } else {
           await expect(
@@ -288,5 +293,153 @@ describe('AgendamentoEstadoService', () => {
         },
       });
     });
+  });
+
+  describe('campos gravados junto com a troca de estado', () => {
+    const agendamentoId = '00000000-0000-4000-a000-000000000200';
+    const responsavelId = '00000000-0000-4000-a000-000000000040';
+
+    beforeEach(() => {
+      prisma.agendamento.findUnique.mockResolvedValue({ id: agendamentoId, status: StatusAgendamento.AGENDADO });
+      prisma.agendamento.updateMany.mockResolvedValue({ count: 1 });
+      prisma.agendamento.findUniqueOrThrow.mockResolvedValue({ id: agendamentoId, status: StatusAgendamento.CANCELADO });
+      prisma.historicoStatus.create.mockResolvedValue({ id: 'hist-uuid-1' });
+    });
+
+    it('grava os campos da ação no mesmo update que troca o estado', async () => {
+      const canceladoEm = new Date('2026-10-06T10:00:00.000Z');
+
+      await service.transicionar(agendamentoId, StatusAgendamento.CANCELADO, responsavelId, 'Paciente desistiu', {
+        canceladoEm,
+        motivoCancelamento: 'Paciente desistiu',
+        canceladoPorId: responsavelId,
+      });
+
+      expect(prisma.agendamento.updateMany).toHaveBeenCalledTimes(1);
+      expect(prisma.agendamento.updateMany).toHaveBeenCalledWith({
+        where: { id: agendamentoId, status: StatusAgendamento.AGENDADO },
+        data: {
+          canceladoEm,
+          motivoCancelamento: 'Paciente desistiu',
+          canceladoPorId: responsavelId,
+          status: StatusAgendamento.CANCELADO,
+        },
+      });
+    });
+
+    it('não deixa os campos da ação trocarem o estado por fora da máquina de estados', async () => {
+      const camposComStatus = { status: StatusAgendamento.REALIZADO } as unknown as CamposDaTransicao;
+
+      await service.transicionar(agendamentoId, StatusAgendamento.CANCELADO, responsavelId, undefined, camposComStatus);
+
+      expect(prisma.agendamento.updateMany.mock.calls[0][0].data.status).toBe(StatusAgendamento.CANCELADO);
+    });
+
+    it('descarta em runtime chaves fora de CAMPOS_DA_TRANSICAO (ex.: slotId, pacienteId)', async () => {
+      const camposForjados = {
+        chegadaEm: new Date('2026-10-06T11:20:00.000Z'),
+        slotId: '00000000-0000-4000-a000-000000000999',
+        pacienteId: '00000000-0000-4000-a000-000000000999',
+        inicio: new Date(),
+      } as unknown as CamposDaTransicao;
+
+      await service.transicionar(agendamentoId, StatusAgendamento.CHEGOU, responsavelId, undefined, camposForjados);
+
+      expect(prisma.agendamento.updateMany.mock.calls[0][0].data).toEqual({
+        chegadaEm: new Date('2026-10-06T11:20:00.000Z'),
+        status: StatusAgendamento.CHEGOU,
+      });
+    });
+
+    it('devolve o agendamento relido dentro da transação, com slot e histórico', async () => {
+      const relido = { id: agendamentoId, status: StatusAgendamento.CANCELADO, slot: null, historicoStatus: [] };
+      prisma.agendamento.findUniqueOrThrow.mockResolvedValue(relido);
+
+      const resultado = await service.transicionar(agendamentoId, StatusAgendamento.CANCELADO, responsavelId);
+
+      expect(resultado).toBe(relido);
+      expect(prisma.agendamento.findUniqueOrThrow).toHaveBeenCalledWith({ where: { id: agendamentoId }, include: INCLUDE_DETALHE });
+    });
+
+    it('repassa null explícito para limpar o campo (diferente de não passar o campo)', async () => {
+      await service.transicionar(agendamentoId, StatusAgendamento.CANCELADO, responsavelId, undefined, {
+        motivoCancelamento: null,
+        canceladoEm: undefined,
+      });
+
+      const data = prisma.agendamento.updateMany.mock.calls[0][0].data;
+      expect(data).toHaveProperty('motivoCancelamento', null);
+      expect(data.canceladoEm).toBeUndefined();
+    });
+
+    it('com campos, responsável vazio é recusado antes de tocar no banco', async () => {
+      await expect(
+        service.transicionar(agendamentoId, StatusAgendamento.CANCELADO, '  ', undefined, { canceladoEm: new Date() }),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+
+    it('com campos, agendamento inexistente dá 404 sem update nem histórico', async () => {
+      prisma.agendamento.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.transicionar(agendamentoId, StatusAgendamento.CHEGOU, responsavelId, undefined, { chegadaEm: new Date() }),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(prisma.agendamento.updateMany).not.toHaveBeenCalled();
+      expect(prisma.historicoStatus.create).not.toHaveBeenCalled();
+    });
+
+    it('com campos, alteração concorrente (count 0) dá 409 e não registra histórico', async () => {
+      prisma.agendamento.updateMany.mockResolvedValue({ count: 0 });
+
+      await expect(
+        service.transicionar(agendamentoId, StatusAgendamento.CHEGOU, responsavelId, undefined, { chegadaEm: new Date() }),
+      ).rejects.toThrow(new ConflictException('O agendamento foi alterado por outra operação.'));
+
+      expect(prisma.historicoStatus.create).not.toHaveBeenCalled();
+    });
+
+    it('não altera o objeto de campos recebido', async () => {
+      const campos: CamposDaTransicao = { chegadaEm: new Date('2026-10-06T11:20:00.000Z') };
+      const copia = { ...campos };
+
+      await service.transicionar(agendamentoId, StatusAgendamento.CHEGOU, responsavelId, undefined, campos);
+
+      expect(campos).toEqual(copia);
+    });
+
+    it('não grava campos da ação quando eles não são passados ou a transição é negada', async () => {
+      await service.transicionar(agendamentoId, StatusAgendamento.CONFIRMADO, responsavelId);
+      expect(prisma.agendamento.updateMany.mock.calls[0][0].data).toEqual({ status: StatusAgendamento.CONFIRMADO });
+
+      prisma.agendamento.updateMany.mockClear();
+      await expect(
+        service.transicionar(agendamentoId, StatusAgendamento.REALIZADO, responsavelId, undefined, {
+          fimAtendimentoEm: new Date(),
+        }),
+      ).rejects.toThrow(ConflictException);
+      expect(prisma.agendamento.updateMany).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('somenteCamposPermitidos', () => {
+  it('mantém exatamente os campos permitidos que foram passados', () => {
+    const todos = Object.fromEntries(CAMPOS_DA_TRANSICAO.map((campo) => [campo, null])) as CamposDaTransicao;
+
+    expect(somenteCamposPermitidos(todos)).toEqual(todos);
+    expect(somenteCamposPermitidos({})).toEqual({});
+  });
+
+  it('não cria chave para campo permitido que não foi passado', () => {
+    expect(Object.keys(somenteCamposPermitidos({ canceladoEm: new Date() }))).toEqual(['canceladoEm']);
+  });
+
+  it('ignora chaves herdadas do protótipo', () => {
+    const herdado = Object.create({ chegadaEm: new Date() }) as CamposDaTransicao;
+
+    expect(somenteCamposPermitidos(herdado)).toEqual({});
   });
 });
