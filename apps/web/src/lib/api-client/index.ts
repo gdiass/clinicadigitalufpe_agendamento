@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  AgendamentoDto,
   CreateDisponibilidadeDto,
   CreateTaskDto,
   DisponibilidadeDto,
@@ -389,6 +390,60 @@ export const tasksControllerRemove = async (id: string, options?: Parameters<typ
   {
     ...options,
     method: 'DELETE'
+
+
+  }
+);}
+
+
+
+export type agendamentosControllerObterResponse200 = {
+  data: AgendamentoDto
+  status: 200
+}
+
+export type agendamentosControllerObterResponse400 = {
+  data: ProblemDetailsDto
+  status: 400
+}
+
+export type agendamentosControllerObterResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type agendamentosControllerObterResponse404 = {
+  data: ProblemDetailsDto
+  status: 404
+}
+
+export type agendamentosControllerObterResponseSuccess = (agendamentosControllerObterResponse200) & {
+  headers: Headers;
+};
+export type agendamentosControllerObterResponseError = (agendamentosControllerObterResponse400 | agendamentosControllerObterResponse401 | agendamentosControllerObterResponse404) & {
+  headers: Headers;
+};
+
+export type agendamentosControllerObterResponse = (agendamentosControllerObterResponseSuccess | agendamentosControllerObterResponseError)
+
+export const getAgendamentosControllerObterUrl = (id: string,) => {
+
+
+
+
+  return `/api/v1/agendamentos/${id}`
+}
+
+/**
+ * Devolve o estado, os horários, o slot, os participantes e o histórico de status do agendamento.
+ * @summary Detalhe do agendamento
+ */
+export const agendamentosControllerObter = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<agendamentosControllerObterResponse> => {
+
+  return customFetch<agendamentosControllerObterResponse>(getAgendamentosControllerObterUrl(id),
+  {
+    ...options,
+    method: 'GET'
 
 
   }
