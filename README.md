@@ -59,6 +59,9 @@ pnpm run setup
 pnpm dev
 ```
 
+O comando gera o cliente Prisma ao iniciar a API. No Windows, encerre uma API
+já em execução antes de iniciar outra, pois ela pode bloquear o motor do Prisma.
+
 Acesse a aplicação em: **[http://localhost:5174](http://localhost:5174)**  
 Documentação da API Swagger em: **[http://localhost:3001/api/v1/docs](http://localhost:3001/api/v1/docs)**
 
@@ -128,7 +131,7 @@ O repositório inclui skills pedagógicas prontas em `.agent/skills/`:
 ```bash
 # Desenvolvimento & Setup
 pnpm run setup          # Executa o provisionamento inicial completo
-pnpm dev            # Inicia API (3001) e Web (5174) em paralelo
+pnpm dev            # Gera o cliente Prisma e inicia API (3001) e Web (5174)
 pnpm scaffold       # Scaffolding interativo para criar novos projetos derivados
 
 # Banco de Dados & Migrations
