@@ -199,6 +199,9 @@ A **agenda do dia** (`GET /api/v1/agenda`, `apps/api/src/agenda/`) junta as duas
 | `DELETE`| `/api/v1/tasks/:id` | Sessão + CSRF | `USER` | Remoção lógica (*soft delete*) da tarefa |
 | `POST` | `/api/v1/disponibilidades` | Shell (`ShellAuthGuard`) | `USER` | Cadastra a disponibilidade do profissional e gera os slots (US-01) |
 | `GET` | `/api/v1/disponibilidades` | Shell (`ShellAuthGuard`) | `USER` | Lista disponibilidades com slots livres/ocupados, por profissional e período |
+| `GET` | `/api/v1/cadastro/profissionais` | Shell (`ShellAuthGuard`) | `USER` | Lista os profissionais do Cadastro (filtros das telas da Agenda, DS-63) |
+| `GET` | `/api/v1/cadastro/servicos` | Shell (`ShellAuthGuard`) | `USER` | Lista os serviços do Cadastro (filtros das telas da Agenda, DS-63) |
+| `GET` | `/api/v1/cadastro/clinicas` | Shell (`ShellAuthGuard`) | `USER` | Lista as clínicas do Cadastro (filtros das telas da Agenda, DS-63) |    
 | `GET` | `/api/v1/agendamentos/:id` | Shell (`ShellAuthGuard`) | `USER` | Detalhe do agendamento: estado, horários, slot, participantes e histórico de status (DS-74) |
 | `GET` | `/api/v1/agenda` | Shell (`ShellAuthGuard`) | `USER` | Agenda do dia: horários livres e agendamentos com estado, por data, profissional e serviço (US-12, DS-13) |
 | `GET` | `/api/v1/perfil/me` | Sessão | - | Consulta perfil de negócio do usuário na Agenda (RECEPCAO ou PROFISSIONAL) (DS-64) |

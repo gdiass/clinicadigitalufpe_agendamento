@@ -12,9 +12,10 @@ import { ShellAuthModule } from './shell-auth/shell-auth.module';
 import { AgendamentosModule } from './agendamentos/agendamentos.module';
 import { AgendaModule } from './agenda/agenda.module';
 import { DisponibilidadesModule } from './disponibilidades/disponibilidades.module';
+import { CadastroModule } from './cadastro/cadastro.module';
 
 @Module({
-  imports: [
+    imports: [
     PrismaModule,
     ShellAuthModule,
     TasksModule,
@@ -22,6 +23,7 @@ import { DisponibilidadesModule } from './disponibilidades/disponibilidades.modu
     AgendaModule,
     DisponibilidadesModule,
     PerfilModule,
+    CadastroModule,
   ],
   controllers: [HealthController],
   providers: [
