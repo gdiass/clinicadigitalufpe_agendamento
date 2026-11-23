@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
+  AgendaControllerObterParams,
+  AgendaDoDiaDto,
   AgendamentoDto,
   CreateDisponibilidadeDto,
   CreateTaskDto,
@@ -441,6 +443,62 @@ export const getAgendamentosControllerObterUrl = (id: string,) => {
 export const agendamentosControllerObter = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<agendamentosControllerObterResponse> => {
 
   return customFetch<agendamentosControllerObterResponse>(getAgendamentosControllerObterUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type agendaControllerObterResponse200 = {
+  data: AgendaDoDiaDto
+  status: 200
+}
+
+export type agendaControllerObterResponse400 = {
+  data: ProblemDetailsDto
+  status: 400
+}
+
+export type agendaControllerObterResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type agendaControllerObterResponseSuccess = (agendaControllerObterResponse200) & {
+  headers: Headers;
+};
+export type agendaControllerObterResponseError = (agendaControllerObterResponse400 | agendaControllerObterResponse401) & {
+  headers: Headers;
+};
+
+export type agendaControllerObterResponse = (agendaControllerObterResponseSuccess | agendaControllerObterResponseError)
+
+export const getAgendaControllerObterUrl = (params: AgendaControllerObterParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/agenda?${stringifiedParams}` : `/api/v1/agenda`
+}
+
+/**
+ * Horários livres e agendamentos do dia, com o estado de cada um, em ordem de início. Filtra por profissional e serviço; sem filtro, mostra todos os profissionais (visão da recepção na T01).
+ * @summary Agenda do dia (US-12)
+ */
+export const agendaControllerObter = async (params: AgendaControllerObterParams, options?: Parameters<typeof customFetch>[1]): Promise<agendaControllerObterResponse> => {
+
+  return customFetch<agendaControllerObterResponse>(getAgendaControllerObterUrl(params),
   {
     ...options,
     method: 'GET'

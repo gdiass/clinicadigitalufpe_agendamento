@@ -6,6 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './agendaControllerObterParams';
+export * from './agendaDoDiaDto';
+export * from './agendamentoDaAgendaDto';
 export * from './agendamentoDto';
 export * from './authMeResponseDto';
 export * from './createDisponibilidadeDto';
@@ -16,6 +19,7 @@ export * from './createUserDtoRole';
 export * from './disponibilidadeDto';
 export * from './disponibilidadesControllerListarParams';
 export * from './historicoStatusDto';
+export * from './horarioDaAgendaDto';
 export * from './managedUserDto';
 export * from './managedUserDtoRole';
 export * from './modalidade';
