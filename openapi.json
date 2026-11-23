@@ -498,6 +498,78 @@
         ]
       }
     },
+    "/api/v1/agenda": {
+      "get": {
+        "description": "Horários livres e agendamentos do dia, com o estado de cada um, em ordem de início. Filtra por profissional e serviço; sem filtro, mostra todos os profissionais (visão da recepção na T01).",
+        "operationId": "AgendaController_obter",
+        "parameters": [
+          {
+            "name": "data",
+            "required": true,
+            "in": "query",
+            "description": "Dia da agenda, no calendário de Recife (AAAA-MM-DD)",
+            "schema": {
+              "example": "2026-10-06",
+              "type": "string"
+            }
+          },
+          {
+            "name": "profissionalId",
+            "required": false,
+            "in": "query",
+            "description": "Mostra só os horários deste profissional",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "servicoId",
+            "required": false,
+            "in": "query",
+            "description": "Mostra só os horários deste serviço",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agenda do dia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgendaDoDiaDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data ausente, em formato inválido ou inexistente; filtro que não é UUID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Agenda do dia (US-12)",
+        "tags": [
+          "agenda"
+        ]
+      }
+    },
     "/api/v1/disponibilidades": {
       "post": {
         "description": "Cria a janela de disponibilidade e gera os slots dela, de acordo com a duração informada.",
@@ -1312,6 +1384,143 @@
           "historico",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "AgendamentoDaAgendaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador do agendamento (abre a T05)"
+          },
+          "status": {
+            "description": "Estado atual (RN08)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatusAgendamento"
+              }
+            ]
+          },
+          "paciente": {
+            "description": "Paciente",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "tipoAtendimento": {
+            "description": "Tipo do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TipoAtendimento"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "paciente",
+          "tipoAtendimento"
+        ]
+      },
+      "HorarioDaAgendaDto": {
+        "type": "object",
+        "properties": {
+          "inicio": {
+            "type": "string",
+            "description": "Início (ISO 8601)",
+            "example": "2026-10-06T11:00:00.000Z"
+          },
+          "fim": {
+            "type": "string",
+            "description": "Fim (ISO 8601)",
+            "example": "2026-10-06T11:30:00.000Z"
+          },
+          "profissional": {
+            "description": "Profissional",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "servico": {
+            "description": "Serviço que identifica a agenda do profissional",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "clinica": {
+            "description": "Clínica",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReferenciaCadastroDto"
+              }
+            ]
+          },
+          "modalidade": {
+            "description": "Modalidade do atendimento",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Modalidade"
+              }
+            ]
+          },
+          "slotId": {
+            "type": "string",
+            "description": "Slot da disponibilidade (null quando o agendamento não tem slot, ex.: encaixe)",
+            "nullable": true
+          },
+          "agendamento": {
+            "description": "Agendamento da linha. null quando o horário está livre. Um agendamento CANCELADO ou REMARCADO aparece numa linha própria, e o slot dele volta como livre em outra linha.",
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AgendamentoDaAgendaDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "inicio",
+          "fim",
+          "profissional",
+          "servico",
+          "clinica",
+          "modalidade",
+          "slotId",
+          "agendamento"
+        ]
+      },
+      "AgendaDoDiaDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "Dia consultado (AAAA-MM-DD)",
+            "example": "2026-10-06"
+          },
+          "temDisponibilidade": {
+            "type": "boolean",
+            "description": "Se há disponibilidade cadastrada no dia para os filtros. Quando false, a tela mostra \"Nenhuma disponibilidade cadastrada para este dia\"."
+          },
+          "horarios": {
+            "description": "Horários em ordem de início. No mesmo horário e profissional: agendamento ativo, horário livre e, por último, agendamentos cancelados ou remarcados.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HorarioDaAgendaDto"
+            }
+          }
+        },
+        "required": [
+          "data",
+          "temDisponibilidade",
+          "horarios"
         ]
       },
       "CreateDisponibilidadeDto": {

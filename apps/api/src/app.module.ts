@@ -10,6 +10,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ShellAuthModule } from './shell-auth/shell-auth.module';
 import { AgendamentosModule } from './agendamentos/agendamentos.module';
+import { AgendaModule } from './agenda/agenda.module';
 import { DisponibilidadesModule } from './disponibilidades/disponibilidades.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { DisponibilidadesModule } from './disponibilidades/disponibilidades.modu
     ShellAuthModule,
     TasksModule,
     AgendamentosModule,
+    AgendaModule,
     DisponibilidadesModule,
     PerfilModule,
   ],

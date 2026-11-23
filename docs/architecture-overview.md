@@ -169,6 +169,8 @@ erDiagram
 
 Um slot está **ocupado** quando tem agendamento fora de `CANCELADO` e `REMARCADO` (RN01/RN04, constante `STATUS_QUE_LIBERAM_SLOT` em `apps/api/src/agendamentos/ocupacao-slot.ts`). Os horários de disponibilidade e slot são de America/Recife.
 
+A **agenda do dia** (`GET /api/v1/agenda`, `apps/api/src/agenda/`) junta as duas tabelas: cada slot livre vira uma linha sem agendamento e cada agendamento do dia (pelo `inicio`, de 00:00 a 24:00 de Recife) vira uma linha com o estado, inclusive encaixes (`slotId` null) e cancelados/remarcados, cujo slot aparece também como livre. `temDisponibilidade` diz se há disponibilidade no dia para os filtros. Índices: `disponibilidades (data, profissional_id)` e `agendamentos (inicio)`, porque a recepção consulta o dia sem filtrar profissional.
+
 ---
 
 ## 📋 4. Catálogo Canônico de Endpoints da API
@@ -198,6 +200,7 @@ Um slot está **ocupado** quando tem agendamento fora de `CANCELADO` e `REMARCAD
 | `POST` | `/api/v1/disponibilidades` | Shell (`ShellAuthGuard`) | `USER` | Cadastra a disponibilidade do profissional e gera os slots (US-01) |
 | `GET` | `/api/v1/disponibilidades` | Shell (`ShellAuthGuard`) | `USER` | Lista disponibilidades com slots livres/ocupados, por profissional e período |
 | `GET` | `/api/v1/agendamentos/:id` | Shell (`ShellAuthGuard`) | `USER` | Detalhe do agendamento: estado, horários, slot, participantes e histórico de status (DS-74) |
+| `GET` | `/api/v1/agenda` | Shell (`ShellAuthGuard`) | `USER` | Agenda do dia: horários livres e agendamentos com estado, por data, profissional e serviço (US-12, DS-13) |
 | `GET` | `/api/v1/perfil/me` | Sessão | - | Consulta perfil de negócio do usuário na Agenda (RECEPCAO ou PROFISSIONAL) (DS-64) |
 
 ### 4.1. Ações sobre agendamento (convenção)

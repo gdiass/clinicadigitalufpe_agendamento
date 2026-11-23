@@ -93,6 +93,7 @@ model Disponibilidade {
 
   slots Slot[]
 
+  @@index([data, profissionalId], map: "disponibilidades_data_profissional_id_idx")
   @@map("disponibilidades")
 }
 
@@ -141,6 +142,7 @@ model Agendamento {
   historicoStatus     HistoricoStatus[]
 
   @@index([profissionalId, inicio], map: "agendamentos_profissional_id_inicio_idx")
+  @@index([inicio], map: "agendamentos_inicio_idx")
   @@index([pacienteId], map: "agendamentos_paciente_id_idx")
   @@index([status], map: "agendamentos_status_idx")
   @@index([clinicaId], map: "agendamentos_clinica_id_idx")
