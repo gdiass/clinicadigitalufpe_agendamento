@@ -1,10 +1,10 @@
 {
   "latestErrorEvent": {
     "code": "TYPE-001",
-    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"\\\"C:\\\\\\\\Program Files\\\\\\\\nodejs\\\\\\\\node.exe\\\" D:\\\\Projects\\\\clinicadigitalufpe\\\\clinicadigitalufpe_mfe\\\\node_modules\\\\.pnpm\\\\typescript@5.9.3\\\\node_modules\\\\typescript\\\\bin\\\\tsc --project D:\\\\Projects\\\\clinicadigitalufpe\\\\clinicadigitalufpe_mfe\\\\apps\\\\web\\\\node_modules\\\\.federation\\\\tsconfig.a4072ca8132189771b8ef9663528e14c.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"\\\"C:\\\\\\\\Program Files\\\\\\\\nodejs\\\\\\\\node.exe\\\" D:\\\\Projects\\\\clinicadigitalufpe\\\\clinicadigitalufpe-agendamento\\\\node_modules\\\\.pnpm\\\\typescript@5.9.3\\\\node_modules\\\\typescript\\\\bin\\\\tsc --project D:\\\\Projects\\\\clinicadigitalufpe\\\\clinicadigitalufpe-agendamento\\\\apps\\\\web\\\\node_modules\\\\.federation\\\\tsconfig.b07297ceb14ab72ba545cd7cd23065b8.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
     "args": {
-      "cmd": "\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" D:\\Projects\\clinicadigitalufpe\\clinicadigitalufpe_mfe\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript\\bin\\tsc --project D:\\Projects\\clinicadigitalufpe\\clinicadigitalufpe_mfe\\apps\\web\\node_modules\\.federation\\tsconfig.a4072ca8132189771b8ef9663528e14c.json"
+      "cmd": "\"C:\\\\Program Files\\\\nodejs\\\\node.exe\" D:\\Projects\\clinicadigitalufpe\\clinicadigitalufpe-agendamento\\node_modules\\.pnpm\\typescript@5.9.3\\node_modules\\typescript\\bin\\tsc --project D:\\Projects\\clinicadigitalufpe\\clinicadigitalufpe-agendamento\\apps\\web\\node_modules\\.federation\\tsconfig.b07297ceb14ab72ba545cd7cd23065b8.json"
     },
-    "timestamp": 1792773626027
+    "timestamp": 1795474801450
   }
 }
