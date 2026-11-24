@@ -9,6 +9,7 @@ import type {
   AgendaControllerObterParams,
   AgendaDoDiaDto,
   AgendamentoDto,
+  ClinicaDto,
   CreateDisponibilidadeDto,
   CreateTaskDto,
   DisponibilidadeDto,
@@ -17,6 +18,8 @@ import type {
   PaginatedTasksResponseDto,
   PerfilDto,
   ProblemDetailsDto,
+  ProfissionalDto,
+  ServicoDto,
   TaskDto,
   TasksControllerFindAllParams,
   UpdateTaskDto
@@ -677,6 +680,153 @@ export const getPerfilControllerMeUrl = () => {
 export const perfilControllerMe = async ( options?: Parameters<typeof customFetch>[1]): Promise<perfilControllerMeResponse> => {
 
   return customFetch<perfilControllerMeResponse>(getPerfilControllerMeUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type cadastroControllerListarProfissionaisResponse200 = {
+  data: ProfissionalDto[]
+  status: 200
+}
+
+export type cadastroControllerListarProfissionaisResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type cadastroControllerListarProfissionaisResponse501 = {
+  data: ProblemDetailsDto
+  status: 501
+}
+
+export type cadastroControllerListarProfissionaisResponseSuccess = (cadastroControllerListarProfissionaisResponse200) & {
+  headers: Headers;
+};
+export type cadastroControllerListarProfissionaisResponseError = (cadastroControllerListarProfissionaisResponse401 | cadastroControllerListarProfissionaisResponse501) & {
+  headers: Headers;
+};
+
+export type cadastroControllerListarProfissionaisResponse = (cadastroControllerListarProfissionaisResponseSuccess | cadastroControllerListarProfissionaisResponseError)
+
+export const getCadastroControllerListarProfissionaisUrl = () => {
+
+
+
+
+  return `/api/v1/cadastro/profissionais`
+}
+
+/**
+ * Lista os profissionais do Cadastro, usada nos filtros das telas da Agenda.
+ * @summary Listar profissionais
+ */
+export const cadastroControllerListarProfissionais = async ( options?: Parameters<typeof customFetch>[1]): Promise<cadastroControllerListarProfissionaisResponse> => {
+
+  return customFetch<cadastroControllerListarProfissionaisResponse>(getCadastroControllerListarProfissionaisUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type cadastroControllerListarServicosResponse200 = {
+  data: ServicoDto[]
+  status: 200
+}
+
+export type cadastroControllerListarServicosResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type cadastroControllerListarServicosResponse501 = {
+  data: ProblemDetailsDto
+  status: 501
+}
+
+export type cadastroControllerListarServicosResponseSuccess = (cadastroControllerListarServicosResponse200) & {
+  headers: Headers;
+};
+export type cadastroControllerListarServicosResponseError = (cadastroControllerListarServicosResponse401 | cadastroControllerListarServicosResponse501) & {
+  headers: Headers;
+};
+
+export type cadastroControllerListarServicosResponse = (cadastroControllerListarServicosResponseSuccess | cadastroControllerListarServicosResponseError)
+
+export const getCadastroControllerListarServicosUrl = () => {
+
+
+
+
+  return `/api/v1/cadastro/servicos`
+}
+
+/**
+ * Lista os serviços do Cadastro, usada nos filtros das telas da Agenda.
+ * @summary Listar serviços
+ */
+export const cadastroControllerListarServicos = async ( options?: Parameters<typeof customFetch>[1]): Promise<cadastroControllerListarServicosResponse> => {
+
+  return customFetch<cadastroControllerListarServicosResponse>(getCadastroControllerListarServicosUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+export type cadastroControllerListarClinicasResponse200 = {
+  data: ClinicaDto[]
+  status: 200
+}
+
+export type cadastroControllerListarClinicasResponse401 = {
+  data: ProblemDetailsDto
+  status: 401
+}
+
+export type cadastroControllerListarClinicasResponse501 = {
+  data: ProblemDetailsDto
+  status: 501
+}
+
+export type cadastroControllerListarClinicasResponseSuccess = (cadastroControllerListarClinicasResponse200) & {
+  headers: Headers;
+};
+export type cadastroControllerListarClinicasResponseError = (cadastroControllerListarClinicasResponse401 | cadastroControllerListarClinicasResponse501) & {
+  headers: Headers;
+};
+
+export type cadastroControllerListarClinicasResponse = (cadastroControllerListarClinicasResponseSuccess | cadastroControllerListarClinicasResponseError)
+
+export const getCadastroControllerListarClinicasUrl = () => {
+
+
+
+
+  return `/api/v1/cadastro/clinicas`
+}
+
+/**
+ * Lista as clínicas do Cadastro, usada nos filtros das telas da Agenda.
+ * @summary Listar clínicas
+ */
+export const cadastroControllerListarClinicas = async ( options?: Parameters<typeof customFetch>[1]): Promise<cadastroControllerListarClinicasResponse> => {
+
+  return customFetch<cadastroControllerListarClinicasResponse>(getCadastroControllerListarClinicasUrl(),
   {
     ...options,
     method: 'GET'
