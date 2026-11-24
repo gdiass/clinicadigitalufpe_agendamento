@@ -8,9 +8,9 @@ import { AuthProvider } from './context/auth-context';
 import { ThemeProvider } from './context/theme-context';
 import { AuthLayout } from './components/layout/auth-layout';
 import { ProtectedRoute } from './components/layout/protected-route';
-import { TasksPage } from './pages/tasks-page';
 import { HomePage } from './pages/home-page';
 import { AgendaPage } from './pages/agenda-page';
+import { NovoAgendamentoPage } from './pages/novo-agendamento-page';
 import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
@@ -75,9 +75,13 @@ export function App() {
                 <Route
                   path="/schedules/new"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <TasksPage />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <NovoAgendamentoPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <NovoAgendamentoPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 <Route
