@@ -11,6 +11,7 @@ import { ProtectedRoute } from './components/layout/protected-route';
 import { HomePage } from './pages/home-page';
 import { AgendaPage } from './pages/agenda-page';
 import { NovoAgendamentoPage } from './pages/novo-agendamento-page';
+import { ConfirmacoesPage } from './pages/confirmacoes-page';
 import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
@@ -87,9 +88,13 @@ export function App() {
                 <Route
                   path="/schedules/confirmations"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <HomePage pageName="Confirmations" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <ConfirmacoesPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <ConfirmacoesPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 <Route
