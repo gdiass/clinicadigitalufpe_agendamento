@@ -10,6 +10,7 @@ import { AuthLayout } from './components/layout/auth-layout';
 import { ProtectedRoute } from './components/layout/protected-route';
 import { TasksPage } from './pages/tasks-page';
 import { HomePage } from './pages/home-page';
+import { AgendaPage } from './pages/agenda-page';
 import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
@@ -52,7 +53,7 @@ export function App() {
             <Routes>
               <Route
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute skipAuth={window.location.port === '5174'}>
                     <AuthLayout/>
                   </ProtectedRoute>
                 }
@@ -61,11 +62,16 @@ export function App() {
                 <Route
                   path="/schedules/home"
                   element={
-                    <ProtectedRoute requiredPerfil={['RECEPCAO', 'PROFISSIONAL']}>
-                      <HomePage pageName="Homepage" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <AgendaPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil={['RECEPCAO', 'PROFISSIONAL']}>
+                        <AgendaPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
+                <Route path="/schedules" element={<Navigate to="/schedules/home" replace />} />
                 <Route
                   path="/schedules/new"
                   element={

@@ -90,7 +90,7 @@ function DevProfileSelectorInner() {
 }
 
 export function DevProfileSelector() {
-  if (!import.meta.env.DEV) {
+  if (!import.meta.env.DEV || typeof document === 'undefined') {
     return null;
   }
 
