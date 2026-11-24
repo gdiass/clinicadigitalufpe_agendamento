@@ -8,11 +8,11 @@ import { AuthProvider } from './context/auth-context';
 import { ThemeProvider } from './context/theme-context';
 import { AuthLayout } from './components/layout/auth-layout';
 import { ProtectedRoute } from './components/layout/protected-route';
-import { HomePage } from './pages/home-page';
 import { AgendaPage } from './pages/agenda-page';
 import { NovoAgendamentoPage } from './pages/novo-agendamento-page';
 import { ConfirmacoesPage } from './pages/confirmacoes-page';
 import { PacientesPage } from './pages/pacientes-page';
+import { EmailsPage } from './pages/emails-page';
 import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
@@ -113,9 +113,13 @@ export function App() {
                 <Route
                   path="/schedules/emails"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <HomePage pageName="Emails" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <EmailsPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <EmailsPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 {/* [VALIDAR] A rota /schedules/meu-atendimento (atendimento clínico pelo profissional) ainda não existe no router e deve ser criada em task futura. */}
