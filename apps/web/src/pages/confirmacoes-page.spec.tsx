@@ -9,6 +9,7 @@ describe('ConfirmacoesPage', () => {
   });
 
   it('remove uma confirmação e mostra toast de sucesso', () => {
+    const eventos = vi.spyOn(window, 'dispatchEvent');
     render(
       <MemoryRouter>
         <ConfirmacoesPage />
@@ -21,6 +22,11 @@ describe('ConfirmacoesPage', () => {
     );
 
     expect(screen.queryByText('Maya Oliveira')).not.toBeInTheDocument();
+    expect(eventos).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'mfe-schedules-confirmation-pending-count',
+      }),
+    );
     expect(
       screen.getByRole('status', { name: '' }),
     ).toHaveTextContent('Consulta de Maya Oliveira confirmada.');

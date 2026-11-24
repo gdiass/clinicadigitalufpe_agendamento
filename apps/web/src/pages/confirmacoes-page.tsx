@@ -50,6 +50,14 @@ export function ConfirmacoesPage() {
     return () => window.clearTimeout(temporizador);
   }, [toast]);
 
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent('mfe-schedules-confirmation-pending-count', {
+        detail: { count: confirmacoes.length },
+      }),
+    );
+  }, [confirmacoes.length]);
+
   function confirmarConsulta(id: string) {
     const confirmacao = confirmacoes.find((item) => item.id === id);
     setConfirmacoes((atuais) =>
