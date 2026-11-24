@@ -12,6 +12,7 @@ import { HomePage } from './pages/home-page';
 import { AgendaPage } from './pages/agenda-page';
 import { NovoAgendamentoPage } from './pages/novo-agendamento-page';
 import { ConfirmacoesPage } from './pages/confirmacoes-page';
+import { PacientesPage } from './pages/pacientes-page';
 import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
@@ -100,9 +101,13 @@ export function App() {
                 <Route
                   path="/schedules/patients"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <HomePage pageName="Patients" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <PacientesPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <PacientesPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 <Route
