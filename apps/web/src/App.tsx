@@ -8,8 +8,11 @@ import { AuthProvider } from './context/auth-context';
 import { ThemeProvider } from './context/theme-context';
 import { AuthLayout } from './components/layout/auth-layout';
 import { ProtectedRoute } from './components/layout/protected-route';
-import { TasksPage } from './pages/tasks-page';
-import { HomePage } from './pages/home-page';
+import { AgendaPage } from './pages/agenda-page';
+import { NovoAgendamentoPage } from './pages/novo-agendamento-page';
+import { ConfirmacoesPage } from './pages/confirmacoes-page';
+import { PacientesPage } from './pages/pacientes-page';
+import { EmailsPage } from './pages/emails-page';
 import { MfeRouteSyncer } from './MfeRouteSyncer';
 
 const queryClient = new QueryClient({
@@ -52,7 +55,7 @@ export function App() {
             <Routes>
               <Route
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute skipAuth={window.location.port === '5174'}>
                     <AuthLayout/>
                   </ProtectedRoute>
                 }
@@ -61,41 +64,62 @@ export function App() {
                 <Route
                   path="/schedules/home"
                   element={
-                    <ProtectedRoute requiredPerfil={['RECEPCAO', 'PROFISSIONAL']}>
-                      <HomePage pageName="Homepage" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <AgendaPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil={['RECEPCAO', 'PROFISSIONAL']}>
+                        <AgendaPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
+                <Route path="/schedules" element={<Navigate to="/schedules/home" replace />} />
                 <Route
                   path="/schedules/new"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <TasksPage />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <NovoAgendamentoPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <NovoAgendamentoPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 <Route
                   path="/schedules/confirmations"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <HomePage pageName="Confirmations" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <ConfirmacoesPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <ConfirmacoesPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 <Route
                   path="/schedules/patients"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <HomePage pageName="Patients" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <PacientesPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <PacientesPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 <Route
                   path="/schedules/emails"
                   element={
-                    <ProtectedRoute requiredPerfil="RECEPCAO">
-                      <HomePage pageName="Emails" />
-                    </ProtectedRoute>
+                    window.location.port === '5174' ? (
+                      <EmailsPage />
+                    ) : (
+                      <ProtectedRoute requiredPerfil="RECEPCAO">
+                        <EmailsPage />
+                      </ProtectedRoute>
+                    )
                   }
                 />
                 {/* [VALIDAR] A rota /schedules/meu-atendimento (atendimento clínico pelo profissional) ainda não existe no router e deve ser criada em task futura. */}
